@@ -1,2 +1,3 @@
-# online-cinema
+# event-pad
+
 Java servlets
