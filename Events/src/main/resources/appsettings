@@ -1,0 +1,4 @@
+db.url=jdbc:postgresql://localhost:5432/Events
+db.user=postgres
+db.password=Passw0rd
+db.driver=org.postgresql.Driver

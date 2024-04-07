@@ -3,7 +3,8 @@ CREATE TABLE main.users (
 	"FirstName" text NULL,
 	"SecondName" text NULL,
 	"Role" int4 NOT NULL,
-	"Account" uuid NOT NULL,
+	"AccountNumber" text NOT NULL,
+	"Balance" float4 NOT NULL,
 	"Email" varchar(256) NULL,
 	CONSTRAINT "PK_users" PRIMARY KEY ("Id")
 );
