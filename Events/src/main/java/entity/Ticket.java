@@ -3,7 +3,7 @@ package entity;
 import java.util.UUID;
 
 public class Ticket {
-    private int id;
+    private long id;
     private int userId;
     private int specificId;
     private int status;
@@ -11,7 +11,7 @@ public class Ticket {
     private double rating;
     private UUID uid;
 
-    public Ticket(int id, int userId, int specificId, int status, String feedback, double rating, UUID uid) {
+    public Ticket(long id, int userId, int specificId, int status, String feedback, double rating, UUID uid) {
         this.id = id;
         this.userId = userId;
         this.specificId = specificId;
@@ -24,11 +24,11 @@ public class Ticket {
     public Ticket() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -1,4 +1,4 @@
-package dao;
+package repositories;
 
 import entity.Event;
 import java.sql.*;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import util.ConnectionManager;
 
-public class EventDao implements Dao<UUID, Event> {
+public class EventRepository implements Repository<UUID, Event> {
 
     public static final String CREATE_SQL = """
             INSERT INTO events(id, name, description, price, address, type, rating, admin_id, uid) 
@@ -45,13 +45,12 @@ public class EventDao implements Dao<UUID, Event> {
     public Event create(Event event) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
-            preparedStatement.setInt(1, event.getId());
+            preparedStatement.setLong(1, event.getId());
             preparedStatement.setString(2, event.getName());
             preparedStatement.setString(3, event.getDescription());
-            preparedStatement.setFloat(4, event.getPrice());
+            preparedStatement.setBigDecimal(4, event.getPrice());
             preparedStatement.setString(5, event.getAddress());
-            preparedStatement.setInt(6, event.getType());
-            preparedStatement.setFloat(7, event.getRating());
+            preparedStatement.setDouble(7, event.getRating());
             preparedStatement.setObject(8, event.getAdminId());
             preparedStatement.setObject(9, event.getUid());
             preparedStatement.executeUpdate();
@@ -97,10 +96,9 @@ public class EventDao implements Dao<UUID, Event> {
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
             preparedStatement.setString(1, event.getName());
             preparedStatement.setString(2, event.getDescription());
-            preparedStatement.setFloat(3, event.getPrice());
+            preparedStatement.setBigDecimal(3, event.getPrice());
             preparedStatement.setString(4, event.getAddress());
-            preparedStatement.setInt(5, event.getType());
-            preparedStatement.setFloat(6, event.getRating());
+            preparedStatement.setDouble(6, event.getRating());
             preparedStatement.setObject(7, event.getAdminId());
             preparedStatement.setObject(8, event.getUid());
             preparedStatement.executeUpdate();
@@ -126,9 +124,8 @@ public class EventDao implements Dao<UUID, Event> {
         event.setId(resultSet.getInt("id"));
         event.setName(resultSet.getString("name"));
         event.setDescription(resultSet.getString("description"));
-        event.setPrice(resultSet.getFloat("price"));
+        event.setPrice(resultSet.getBigDecimal("price"));
         event.setAddress(resultSet.getString("address"));
-        event.setType(resultSet.getInt("type"));
         event.setRating(resultSet.getFloat("rating"));
         event.setAdminId(resultSet.getObject("admin_id", UUID.class));
         event.setUid(resultSet.getObject("uid", UUID.class));

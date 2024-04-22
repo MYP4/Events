@@ -1,4 +1,4 @@
-package dao;
+package repositories;
 
 import entity.Ticket;
 import java.sql.*;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import util.ConnectionManager;
 
-public class TicketDao {
+public class TicketRepository {
 
     public static final String CREATE_SQL = """
             INSERT INTO tickets(user_id, specific_id, status, feedback, rating, uid) 
@@ -43,8 +43,8 @@ public class TicketDao {
     public Ticket create(Ticket ticket) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
-            preparedStatement.setObject(1, ticket.getUserId());
-            preparedStatement.setInt(2, ticket.getSpecificId());
+            preparedStatement.setLong(1, ticket.getUserId());
+            preparedStatement.setLong(2, ticket.getSpecificId());
             preparedStatement.setInt(3, ticket.getStatus());
             preparedStatement.setString(4, ticket.getFeedback());
             preparedStatement.setDouble(5, ticket.getRating());

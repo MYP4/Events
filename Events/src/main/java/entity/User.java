@@ -1,17 +1,19 @@
 package entity;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class User {
-    private UUID id;
+    private long id;
     private String firstName;
     private String secondName;
-    private int role;
+    private UserRole role;
     private String accountNumber;
-    private float balance;
+    private BigDecimal balance;
     private String email;
+    private UUID uid;
 
-    public User(UUID id, String firstName, String secondName, int role, String accountNumber, float balance, String email) {
+    public User(long id, String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String email) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
@@ -24,11 +26,11 @@ public class User {
     public User() {
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -48,11 +50,11 @@ public class User {
         this.secondName = secondName;
     }
 
-    public int getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(int role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 
@@ -64,11 +66,11 @@ public class User {
         this.accountNumber = accountNumber;
     }
 
-    public float getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(float balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

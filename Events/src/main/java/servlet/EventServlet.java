@@ -2,7 +2,7 @@ package servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dao.EventDao;
+import repositories.EventRepository;
 import entity.Event;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/events")
 public class EventServlet extends HttpServlet {
 
-    private EventDao eventDao = new EventDao();
+    private EventRepository eventDao = new EventRepository();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

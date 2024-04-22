@@ -1,4 +1,4 @@
-package dao;
+package repositories;
 
 import entity.Specific;
 import java.sql.*;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import util.ConnectionManager;
 
-public class SpecificDao {
+public class SpecificRepository {
 
     public static final String CREATE_SQL = """
             INSERT INTO specifics(event_id, description, ticket_count, price, address, date, day_of_week, time, is_private, code, rating, uid) 
@@ -49,14 +49,13 @@ public class SpecificDao {
     public Specific create(Specific specific) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
-            preparedStatement.setInt(1, specific.getEventId());
+            preparedStatement.setLong(1, specific.getEventId());
             preparedStatement.setString(2, specific.getDescription());
             preparedStatement.setInt(3, specific.getTicketCount());
             preparedStatement.setFloat(4, specific.getPrice());
             preparedStatement.setString(5, specific.getAddress());
-            preparedStatement.setDate(6, specific.getDate());
+            preparedStatement.setTimestamp(6, specific.getDate());
             preparedStatement.setObject(7, specific.getDayOfWeek());
-            preparedStatement.setTime(8, specific.getTime());
             preparedStatement.setBoolean(9, specific.isPrivate());
             preparedStatement.setString(10, specific.getCode());
             preparedStatement.setFloat(11, specific.getRating());
@@ -98,14 +97,13 @@ public class SpecificDao {
     public void update(Specific specific) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setInt(1, specific.getEventId());
+            preparedStatement.setLong(1, specific.getEventId());
             preparedStatement.setString(2, specific.getDescription());
             preparedStatement.setInt(3, specific.getTicketCount());
             preparedStatement.setFloat(4, specific.getPrice());
             preparedStatement.setString(5, specific.getAddress());
-            preparedStatement.setDate(6, specific.getDate());
+            preparedStatement.setTimestamp(6, specific.getDate());
             preparedStatement.setObject(7, specific.getDayOfWeek());
-            preparedStatement.setTime(8, specific.getTime());
             preparedStatement.setBoolean(9, specific.isPrivate());
             preparedStatement.setString(10, specific.getCode());
             preparedStatement.setFloat(11, specific.getRating());
@@ -129,15 +127,14 @@ public class SpecificDao {
 
     private Specific buildSpecificEntity(ResultSet resultSet) throws SQLException {
         Specific specific = new Specific();
-        specific.setId(resultSet.getInt("id"));
+        specific.setId(resultSet.getLong("id"));
         specific.setEventId(resultSet.getInt("event_id"));
         specific.setDescription(resultSet.getString("description"));
         specific.setTicketCount(resultSet.getInt("ticket_count"));
         specific.setPrice(resultSet.getFloat("price"));
         specific.setAddress(resultSet.getString("address"));
-        specific.setDate(resultSet.getDate("date"));
+        specific.setDate(resultSet.getTimestamp("date"));
         specific.setDayOfWeek(resultSet.getObject("day_of_week", Integer.class));
-        specific.setTime(resultSet.getTime("time"));
         specific.setPrivate(resultSet.getBoolean("is_private"));
         specific.setCode(resultSet.getString("code"));
         specific.setRating(resultSet.getFloat("rating"));

@@ -2,7 +2,7 @@ package servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dao.TicketDao;
+import repositories.TicketRepository;
 import entity.Ticket;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,11 +17,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/tickets")
 public class TicketServlet extends HttpServlet {
 
-    private TicketDao ticketDao = new TicketDao();
+    private TicketRepository ticketRepository = new TicketRepository();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Ticket> tickets = ticketDao.findAll();
+        List<Ticket> tickets = ticketRepository.findAll();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
@@ -32,7 +32,7 @@ public class TicketServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Ticket ticket = parseJsonToTicket(request.getReader());
-        ticketDao.create(ticket);
+        ticketRepository.create(ticket);
         response.setStatus(HttpServletResponse.SC_CREATED);
     }
 
@@ -40,14 +40,14 @@ public class TicketServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         Ticket ticket = parseJsonToTicket(request.getReader());
-        ticketDao.update(ticket);
+        ticketRepository.update(ticket);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UUID id = UUID.fromString(request.getParameter("id"));
-        boolean deleted = ticketDao.delete(id);
+        boolean deleted = ticketRepository.delete(id);
         if (deleted) {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } else {

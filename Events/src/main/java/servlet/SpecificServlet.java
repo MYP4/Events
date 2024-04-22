@@ -2,12 +2,10 @@ package servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dao.SpecificDao;
+import repositories.SpecificRepository;
 import entity.Specific;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
-import java.sql.Time;
 import java.util.List;
 import java.util.UUID;
 import jakarta.servlet.ServletException;
@@ -19,11 +17,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/specifics")
 public class SpecificServlet extends HttpServlet {
 
-    private SpecificDao specificDao = new SpecificDao();
+    private SpecificRepository specificRepository = new SpecificRepository();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Specific> specifics = specificDao.findAll();
+        List<Specific> specifics = specificRepository.findAll();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
@@ -34,21 +32,21 @@ public class SpecificServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Specific specific = parseJsonToSpecific(request.getReader());
-        specificDao.create(specific);
+        specificRepository.create(specific);
         response.setStatus(HttpServletResponse.SC_CREATED);
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Specific specific = parseJsonToSpecific(request.getReader());
-        specificDao.update(specific);
+        specificRepository.update(specific);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UUID id = UUID.fromString(request.getParameter("id"));
-        boolean deleted = specificDao.delete(id);
+        boolean deleted = specificRepository.delete(id);
         if (deleted) {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } else {

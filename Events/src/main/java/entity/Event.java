@@ -1,25 +1,24 @@
 package entity;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class Event {
-    private int id;
+    private long id;
     private String name;
     private String description;
-    private float price;
+    private BigDecimal price;
     private String address;
-    private int type;
-    private float rating;
+    private double rating;
     private UUID adminId;
     private UUID uid;
 
-    public Event(int id, String name, String description, float price, String address, int type, float rating, UUID adminId, UUID uid) {
+    public Event(int id, String name, String description, BigDecimal price, String address, float rating, UUID adminId, UUID uid) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.address = address;
-        this.type = type;
         this.rating = rating;
         this.adminId = adminId;
         this.uid = uid;
@@ -28,11 +27,11 @@ public class Event {
     public Event() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -52,11 +51,11 @@ public class Event {
         this.description = description;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -68,19 +67,11 @@ public class Event {
         this.address = address;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public float getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 

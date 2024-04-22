@@ -1,13 +1,15 @@
-package dao;
+package repositories;
 
 import entity.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import entity.UserRole;
 import util.ConnectionManager;
 
-public class UserDao implements Dao<UUID, User> {
+public class UserRepository implements Repository<UUID, User> {
 
     public static final String CREATE_SQL = """
             INSERT INTO users(id, first_name, second_name, role, account_number, balance, email) 
@@ -47,9 +49,9 @@ public class UserDao implements Dao<UUID, User> {
             preparedStatement.setObject(1, user.getId());
             preparedStatement.setString(2, user.getFirstName());
             preparedStatement.setString(3, user.getSecondName());
-            preparedStatement.setInt(4, user.getRole());
+            preparedStatement.setObject(4, user.getRole());
             preparedStatement.setString(5, user.getAccountNumber());
-            preparedStatement.setFloat(6, user.getBalance());
+            preparedStatement.setBigDecimal(6, user.getBalance());
             preparedStatement.setString(7, user.getEmail());
             preparedStatement.executeUpdate();
             return user;
@@ -94,9 +96,9 @@ public class UserDao implements Dao<UUID, User> {
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
             preparedStatement.setString(1, user.getFirstName());
             preparedStatement.setString(2, user.getSecondName());
-            preparedStatement.setInt(3, user.getRole());
+            preparedStatement.setObject(3, user.getRole());
             preparedStatement.setString(4, user.getAccountNumber());
-            preparedStatement.setFloat(5, user.getBalance());
+            preparedStatement.setBigDecimal(5, user.getBalance());
             preparedStatement.setString(6, user.getEmail());
             preparedStatement.setObject(7, user.getId());
             preparedStatement.executeUpdate();
@@ -120,12 +122,12 @@ public class UserDao implements Dao<UUID, User> {
 
     private User buildUserEntity(ResultSet resultSet) throws SQLException {
         User user = new User();
-        user.setId(resultSet.getObject("id", UUID.class));
+        user.setId(resultSet.getInt("id"));
         user.setFirstName(resultSet.getString("first_name"));
         user.setSecondName(resultSet.getString("second_name"));
-        user.setRole(resultSet.getInt("role"));
+        user.setRole(UserRole.find(resultSet.getString("user_role")).orElse(null));
         user.setAccountNumber(resultSet.getString("account_number"));
-        user.setBalance(resultSet.getFloat("balance"));
+        user.setBalance(resultSet.getBigDecimal("balance"));
         user.setEmail(resultSet.getString("email"));
         return user;
     }

@@ -2,7 +2,7 @@ package servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dao.UserDao;
+import repositories.UserRepository;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/users")
 public class UserServlet extends HttpServlet {
 
-    private UserDao userDao = new UserDao();
+    private UserRepository userDao = new UserRepository();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

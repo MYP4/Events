@@ -1,24 +1,27 @@
 package entity;
 
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Specific {
-    private int id;
-    private int eventId;
+    private long id;
+    private long eventId;
     private String description;
     private int ticketCount;
     private float price;
     private String address;
-    private java.sql.Date date;
+    private Timestamp date;
     private Integer dayOfWeek;
-    private java.sql.Time time;
     private boolean isPrivate;
     private String code;
     private float rating;
     private UUID uid;
 
-    public Specific(int eventId, String description, int ticketCount, float price, String address, java.sql.Date date, Integer dayOfWeek, java.sql.Time time, boolean isPrivate, String code, float rating, UUID uid) {
+    public Specific(long id, long eventId, String description, int ticketCount, float price, String address, Timestamp date, Integer dayOfWeek, boolean isPrivate, String code, float rating, UUID uid) {
+        this.id = id;
         this.eventId = eventId;
         this.description = description;
         this.ticketCount = ticketCount;
@@ -26,7 +29,6 @@ public class Specific {
         this.address = address;
         this.date = date;
         this.dayOfWeek = dayOfWeek;
-        this.time = time;
         this.isPrivate = isPrivate;
         this.code = code;
         this.rating = rating;
@@ -36,19 +38,19 @@ public class Specific {
     public Specific() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getEventId() {
+    public long getEventId() {
         return eventId;
     }
 
-    public void setEventId(int eventId) {
+    public void setEventId(long eventId) {
         this.eventId = eventId;
     }
 
@@ -84,11 +86,11 @@ public class Specific {
         this.address = address;
     }
 
-    public java.sql.Date getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
-    public void setDate(java.sql.Date date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 
@@ -100,20 +102,12 @@ public class Specific {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public java.sql.Time getTime() {
-        return time;
-    }
-
-    public void setTime(java.sql.Time time) {
-        this.time = time;
-    }
-
     public boolean isPrivate() {
         return isPrivate;
     }
 
-    public void setPrivate(boolean isPrivate) {
-        this.isPrivate = isPrivate;
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 
     public String getCode() {
