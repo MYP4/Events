@@ -1,9 +1,9 @@
-package servlet;
+package systems.servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import repositories.SpecificRepository;
-import entity.Specific;
+import data.repositories.SpecificRepository;
+import data.entity.Specific;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -17,11 +17,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/specifics")
 public class SpecificServlet extends HttpServlet {
 
-    private SpecificRepository specificRepository = new SpecificRepository();
+    private final SpecificRepository specificRepository = new SpecificRepository();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Specific> specifics = specificRepository.findAll();
+        List<Specific> specifics = specificRepository.getAll();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();

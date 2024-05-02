@@ -1,4 +1,4 @@
-package entity;
+package data.entity;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -13,7 +13,7 @@ public class User {
     private String email;
     private UUID uid;
 
-    public User(long id, String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String email) {
+    public User(long id, String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String email, UUID uid) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
@@ -21,6 +21,7 @@ public class User {
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.email = email;
+        this.uid = uid;
     }
 
     public User() {
@@ -80,6 +81,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public UUID getUid() {
+        return uid;
+    }
+
+    public void setUid(UUID uid) {
+        this.uid = uid;
     }
 }
 

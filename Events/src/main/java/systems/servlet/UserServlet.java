@@ -1,9 +1,9 @@
-package servlet;
+package systems.servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import repositories.TicketRepository;
-import entity.Ticket;
+import data.repositories.UserRepository;
+import data.entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -14,40 +14,39 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/tickets")
-public class TicketServlet extends HttpServlet {
+@WebServlet("/users")
+public class UserServlet extends HttpServlet {
 
-    private TicketRepository ticketRepository = new TicketRepository();
+    private final UserRepository userDao = new UserRepository();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Ticket> tickets = ticketRepository.findAll();
+        List<User> users = userDao.getAll();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
-        out.print(convertTicketsToJson(tickets));
+        out.print(convertUsersToJson(users));
         out.flush();
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Ticket ticket = parseJsonToTicket(request.getReader());
-        ticketRepository.create(ticket);
+        User user = parseJsonToUser(request.getReader());
+        userDao.create(user);
         response.setStatus(HttpServletResponse.SC_CREATED);
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        Ticket ticket = parseJsonToTicket(request.getReader());
-        ticketRepository.update(ticket);
+        User user = parseJsonToUser(request.getReader());
+        userDao.update(user);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UUID id = UUID.fromString(request.getParameter("id"));
-        boolean deleted = ticketRepository.delete(id);
+        boolean deleted = userDao.delete(id);
         if (deleted) {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } else {
@@ -55,21 +54,21 @@ public class TicketServlet extends HttpServlet {
         }
     }
 
-    private String convertTicketsToJson(List<Ticket> tickets) {
+    private String convertUsersToJson(List<User> users) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.writeValueAsString(tickets);
+            return objectMapper.writeValueAsString(users);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error converting tickets to JSON", e);
+            throw new RuntimeException("Error converting users to JSON", e);
         }
     }
 
-    private Ticket parseJsonToTicket(java.io.BufferedReader reader) throws IOException {
+    private User parseJsonToUser(java.io.BufferedReader reader) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            return objectMapper.readValue(reader, Ticket.class);
+            return objectMapper.readValue(reader, User.class);
         } catch (JsonProcessingException e) {
-            throw new IOException("Error parsing JSON to Ticket", e);
+            throw new IOException("Error parsing JSON to User", e);
         }
     }
 }

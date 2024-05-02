@@ -1,9 +1,9 @@
-package servlet;
+package systems.servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import repositories.EventRepository;
-import entity.Event;
+import data.repositories.EventRepository;
+import data.entity.Event;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -17,11 +17,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/events")
 public class EventServlet extends HttpServlet {
 
-    private EventRepository eventDao = new EventRepository();
+    private final EventRepository eventRepository = new EventRepository();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Event> events = eventDao.findAll();
+        List<Event> events = eventRepository.getAll();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
@@ -32,21 +32,21 @@ public class EventServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Event event = parseJsonToEvent(request.getReader());
-        eventDao.create(event);
+        eventRepository.create(event);
         response.setStatus(HttpServletResponse.SC_CREATED);
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Event event = parseJsonToEvent(request.getReader());
-        eventDao.update(event);
+        eventRepository.update(event);
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UUID id = UUID.fromString(request.getParameter("id"));
-        boolean deleted = eventDao.delete(id);
+        boolean deleted = eventRepository.delete(id);
         if (deleted) {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } else {

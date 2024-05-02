@@ -1,6 +1,6 @@
-package repositories;
+package data.repositories;
 
-import entity.Specific;
+import data.entity.Specific;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +54,7 @@ public class SpecificRepository {
             preparedStatement.setInt(3, specific.getTicketCount());
             preparedStatement.setFloat(4, specific.getPrice());
             preparedStatement.setString(5, specific.getAddress());
-            preparedStatement.setTimestamp(6, specific.getDate());
-            preparedStatement.setObject(7, specific.getDayOfWeek());
-            preparedStatement.setBoolean(9, specific.isPrivate());
-            preparedStatement.setString(10, specific.getCode());
-            preparedStatement.setFloat(11, specific.getRating());
-            preparedStatement.setObject(12, specific.getUid());
+            preparedStatement.setObject(6, specific.getUid());
             preparedStatement.executeUpdate();
             return specific;
         } catch (SQLException e) {
@@ -80,7 +75,7 @@ public class SpecificRepository {
         }
     }
 
-    public List<Specific> findAll() {
+    public List<Specific> getAll() {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -102,12 +97,7 @@ public class SpecificRepository {
             preparedStatement.setInt(3, specific.getTicketCount());
             preparedStatement.setFloat(4, specific.getPrice());
             preparedStatement.setString(5, specific.getAddress());
-            preparedStatement.setTimestamp(6, specific.getDate());
-            preparedStatement.setObject(7, specific.getDayOfWeek());
-            preparedStatement.setBoolean(9, specific.isPrivate());
-            preparedStatement.setString(10, specific.getCode());
-            preparedStatement.setFloat(11, specific.getRating());
-            preparedStatement.setObject(12, specific.getUid());
+            preparedStatement.setObject(6, specific.getUid());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -133,11 +123,6 @@ public class SpecificRepository {
         specific.setTicketCount(resultSet.getInt("ticket_count"));
         specific.setPrice(resultSet.getFloat("price"));
         specific.setAddress(resultSet.getString("address"));
-        specific.setDate(resultSet.getTimestamp("date"));
-        specific.setDayOfWeek(resultSet.getObject("day_of_week", Integer.class));
-        specific.setPrivate(resultSet.getBoolean("is_private"));
-        specific.setCode(resultSet.getString("code"));
-        specific.setRating(resultSet.getFloat("rating"));
         specific.setUid(resultSet.getObject("uid", UUID.class));
         return specific;
     }

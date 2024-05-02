@@ -1,12 +1,12 @@
-package repositories;
+package data.repositories;
 
-import entity.User;
+import data.entity.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import entity.UserRole;
+import data.entity.UserRole;
 import util.ConnectionManager;
 
 public class UserRepository implements Repository<UUID, User> {
@@ -76,7 +76,7 @@ public class UserRepository implements Repository<UUID, User> {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> getAll() {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             ResultSet resultSet = preparedStatement.executeQuery();

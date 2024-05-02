@@ -1,68 +1,70 @@
-package repositories;
+package data.repositories;
 
-import entity.Ticket;
+import data.entity.Event;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import util.ConnectionManager;
 
-public class TicketRepository {
+public class EventRepository implements Repository<UUID, Event> {
 
     public static final String CREATE_SQL = """
-            INSERT INTO tickets(user_id, specific_id, status, feedback, rating, uid) 
-            VALUES (?, ?, ?, ?, ?, ?);
+            INSERT INTO events(id, name, description, price, address, type, rating, admin_id, uid) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
             """;
 
     public static final String FIND_ALL_SQL = """
-            SELECT id, user_id, specific_id, status, feedback, rating, uid
-            FROM tickets
+            SELECT id, name, description, price, address, type, rating, admin_id, uid
+            FROM events
             """;
 
     public static final String FIND_BY_ID_SQL = """
-            SELECT id, user_id, specific_id, status, feedback, rating, uid
-            FROM tickets
+            SELECT id, name, description, price, address, type, rating, admin_id, uid
+            FROM events
             WHERE uid = ?
             """;
 
     public static final String UPDATE_SQL = """
-            UPDATE tickets 
-            SET user_id = ?, 
-                specific_id = ?, 
-                status = ?, 
-                feedback = ?, 
-                rating = ? 
+            UPDATE events 
+            SET name = ?, 
+                description = ?, 
+                price = ?, 
+                address = ?, 
+                type = ?, 
+                rating = ?, 
+                admin_id = ? 
             WHERE uid = ?;
             """;
 
     public static final String DELETE_SQL = """
-            DELETE FROM tickets
+            DELETE FROM events
             WHERE uid = ?
             """;
 
-    public Ticket create(Ticket ticket) {
+    public Event create(Event event) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
-            preparedStatement.setLong(1, ticket.getUserId());
-            preparedStatement.setLong(2, ticket.getSpecificId());
-            preparedStatement.setInt(3, ticket.getStatus());
-            preparedStatement.setString(4, ticket.getFeedback());
-            preparedStatement.setDouble(5, ticket.getRating());
-            preparedStatement.setObject(6, ticket.getUid());
+            preparedStatement.setLong(1, event.getId());
+            preparedStatement.setString(2, event.getName());
+            preparedStatement.setString(3, event.getDescription());
+            preparedStatement.setObject(4, event.getAdminId());
+            preparedStatement.setObject(5, event.getUid());
             preparedStatement.executeUpdate();
-            return ticket;
+            return event;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public Ticket getById(UUID id) {
+    @Override
+    public Event getById(UUID id) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setObject(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return buildTicketEntity(resultSet);
+                return buildEventEntity(resultSet);
             }
             return null;
         } catch (SQLException e) {
@@ -70,13 +72,14 @@ public class TicketRepository {
         }
     }
 
-    public List<Ticket> findAll() {
+    @Override
+    public List<Event> getAll() {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<Ticket> result = new ArrayList<>();
+            List<Event> result = new ArrayList<>();
             while (resultSet.next()) {
-                result.add(buildTicketEntity(resultSet));
+                result.add(buildEventEntity(resultSet));
             }
             return result;
         } catch (SQLException e) {
@@ -84,21 +87,21 @@ public class TicketRepository {
         }
     }
 
-    public void update(Ticket ticket) {
+    @Override
+    public void update(Event event) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setObject(1, ticket.getUserId());
-            preparedStatement.setInt(2, ticket.getSpecificId());
-            preparedStatement.setInt(3, ticket.getStatus());
-            preparedStatement.setString(4, ticket.getFeedback());
-            preparedStatement.setDouble(5, ticket.getRating());
-            preparedStatement.setObject(6, ticket.getUid());
+            preparedStatement.setString(1, event.getName());
+            preparedStatement.setString(2, event.getDescription());
+            preparedStatement.setObject(3, event.getAdminId());
+            preparedStatement.setObject(4, event.getUid());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
     public boolean delete(UUID id) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
@@ -110,15 +113,13 @@ public class TicketRepository {
         }
     }
 
-    private Ticket buildTicketEntity(ResultSet resultSet) throws SQLException {
-        Ticket ticket = new Ticket();
-        ticket.setId(resultSet.getInt("id"));
-        ticket.setUserId(resultSet.getObject("user_id", int.class));
-        ticket.setSpecificId(resultSet.getInt("specific_id"));
-        ticket.setStatus(resultSet.getInt("status"));
-        ticket.setFeedback(resultSet.getString("feedback"));
-        ticket.setRating(resultSet.getDouble("rating"));
-        ticket.setUid(resultSet.getObject("uid", UUID.class));
-        return ticket;
+    private Event buildEventEntity(ResultSet resultSet) throws SQLException {
+        Event event = new Event();
+        event.setId(resultSet.getInt("id"));
+        event.setName(resultSet.getString("name"));
+        event.setDescription(resultSet.getString("description"));
+        event.setAdminId(resultSet.getObject("admin_id", UUID.class));
+        event.setUid(resultSet.getObject("uid", UUID.class));
+        return event;
     }
 }
