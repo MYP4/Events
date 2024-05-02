@@ -3,34 +3,34 @@ package data.models;
 import java.util.UUID;
 
 public class TicketModel {
-    private int userId;
-    private int specificId;
+    private UUID userId;
+    private UUID specificId;
     private int status;
     private UUID uid;
 
     public TicketModel() {
     }
 
-    public TicketModel(int userId, int specificId, int status, UUID uid) {
+    public TicketModel(UUID userId, UUID specificId, int status, UUID uid) {
         this.userId = userId;
         this.specificId = specificId;
         this.status = status;
         this.uid = uid;
     }
 
-    public int getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 
-    public int getSpecificId() {
+    public UUID getSpecificId() {
         return specificId;
     }
 
-    public void setSpecificId(int specificId) {
+    public void setSpecificId(UUID specificId) {
         this.specificId = specificId;
     }
 

@@ -10,7 +10,9 @@ public class User {
     private UserRole role;
     private String accountNumber;
     private BigDecimal balance;
-    private String email;
+    private String login;
+    private String password;
+
     private UUID uid;
 
     public User(long id, String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String email, UUID uid) {
@@ -20,11 +22,19 @@ public class User {
         this.role = role;
         this.accountNumber = accountNumber;
         this.balance = balance;
-        this.email = email;
+        this.login = email;
         this.uid = uid;
     }
 
     public User() {
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public long getId() {
@@ -75,12 +85,12 @@ public class User {
         this.balance = balance;
     }
 
-    public String getEmail() {
-        return email;
+    public String getLogin() {
+        return login;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public UUID getUid() {

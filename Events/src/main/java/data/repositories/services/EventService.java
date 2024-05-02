@@ -1,4 +1,4 @@
-package services;
+package data.repositories.services;
 
 import data.entity.Event;
 import data.entity.User;
@@ -37,25 +37,24 @@ public class EventService {
         return eventToEventModelMapper.map(eventRepository.getById(id));
     }
 
-    public EventModel createEvent(EventModel eventModel, UUID userId) throws CreationException {
+    public EventModel create(EventModel eventModel) throws CreationException {
         try {
-            User user = userRepository.getById(userId);
+            User user = userRepository.getById(eventModel.getAdminId());
             if (user == null)
                 throw new CreationException("Failed to create event: user not exists");
 
             Event event = eventModelToEventMapper.map(eventModel);
-            event.setAdminId(userId);
             return eventToEventModelMapper.map(eventRepository.create(event));
         } catch (Exception e) {
             throw new CreationException("Failed to create event: " + e.getMessage());
         }
     }
 
-    public void updateEvent(EventModel eventModel) {
+    public void update(EventModel eventModel) {
         eventRepository.update(eventModelToEventMapper.map(eventModel));
     }
 
-    public void deleteEventById(UUID id) {
+    public void delete(UUID id) {
         eventRepository.delete(id);
     }
 }
