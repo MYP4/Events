@@ -43,8 +43,8 @@ public class TicketRepository {
     public Ticket create(Ticket ticket) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
-            preparedStatement.setLong(1, ticket.getUserId());
-            preparedStatement.setLong(2, ticket.getSpecificId());
+            preparedStatement.setObject(1, ticket.getUserId());
+            preparedStatement.setObject(2, ticket.getSpecificId());
             preparedStatement.setInt(3, ticket.getStatus());
             preparedStatement.setObject(4, ticket.getUid());
             preparedStatement.executeUpdate();
@@ -86,7 +86,7 @@ public class TicketRepository {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
             preparedStatement.setObject(1, ticket.getUserId());
-            preparedStatement.setInt(2, ticket.getSpecificId());
+            preparedStatement.setObject(2, ticket.getSpecificId());
             preparedStatement.setInt(3, ticket.getStatus());
             preparedStatement.setObject(4, ticket.getUid());
             preparedStatement.executeUpdate();
@@ -109,8 +109,8 @@ public class TicketRepository {
     private Ticket buildTicketEntity(ResultSet resultSet) throws SQLException {
         Ticket ticket = new Ticket();
         ticket.setId(resultSet.getInt("id"));
-        ticket.setUserId(resultSet.getObject("user_id", int.class));
-        ticket.setSpecificId(resultSet.getInt("specific_id"));
+        ticket.setUserId((UUID) resultSet.getObject("user_id"));
+        ticket.setSpecificId((UUID)resultSet.getObject("specific_id"));
         ticket.setStatus(resultSet.getInt("status"));
         ticket.setUid(resultSet.getObject("uid", UUID.class));
         return ticket;

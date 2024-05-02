@@ -5,14 +5,14 @@ import java.util.UUID;
 
 public class Specific {
     private long id;
-    private long eventId;
+    private UUID eventId;
     private String description;
     private int ticketCount;
     private float price;
     private String address;
     private UUID uid;
 
-    public Specific(long id, long eventId, String description, int ticketCount, float price, String address, UUID uid) {
+    public Specific(long id, UUID eventId, String description, int ticketCount, float price, String address, UUID uid) {
         this.id = id;
         this.eventId = eventId;
         this.description = description;
@@ -33,11 +33,11 @@ public class Specific {
         this.id = id;
     }
 
-    public long getEventId() {
+    public UUID getEventId() {
         return eventId;
     }
 
-    public void setEventId(long eventId) {
+    public void setEventId(UUID eventId) {
         this.eventId = eventId;
     }
 

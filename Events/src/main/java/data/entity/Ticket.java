@@ -4,12 +4,12 @@ import java.util.UUID;
 
 public class Ticket {
     private long id;
-    private int userId;
-    private int specificId;
+    private UUID userId;
+    private UUID specificId;
     private int status;
     private UUID uid;
 
-    public Ticket(long id, int userId, int specificId, int status, UUID uid) {
+    public Ticket(long id, UUID userId, UUID specificId, int status, UUID uid) {
         this.id = id;
         this.userId = userId;
         this.specificId = specificId;
@@ -28,19 +28,19 @@ public class Ticket {
         this.id = id;
     }
 
-    public int getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 
-    public int getSpecificId() {
+    public UUID getSpecificId() {
         return specificId;
     }
 
-    public void setSpecificId(int specificId) {
+    public void setSpecificId(UUID specificId) {
         this.specificId = specificId;
     }
 

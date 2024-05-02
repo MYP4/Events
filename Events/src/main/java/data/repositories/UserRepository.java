@@ -52,7 +52,7 @@ public class UserRepository implements Repository<UUID, User> {
             preparedStatement.setObject(4, user.getRole());
             preparedStatement.setString(5, user.getAccountNumber());
             preparedStatement.setBigDecimal(6, user.getBalance());
-            preparedStatement.setString(7, user.getEmail());
+            preparedStatement.setString(7, user.getLogin());
             preparedStatement.executeUpdate();
             return user;
         } catch (SQLException e) {
@@ -99,7 +99,7 @@ public class UserRepository implements Repository<UUID, User> {
             preparedStatement.setObject(3, user.getRole());
             preparedStatement.setString(4, user.getAccountNumber());
             preparedStatement.setBigDecimal(5, user.getBalance());
-            preparedStatement.setString(6, user.getEmail());
+            preparedStatement.setString(6, user.getLogin());
             preparedStatement.setObject(7, user.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -128,7 +128,7 @@ public class UserRepository implements Repository<UUID, User> {
         user.setRole(UserRole.find(resultSet.getString("user_role")).orElse(null));
         user.setAccountNumber(resultSet.getString("account_number"));
         user.setBalance(resultSet.getBigDecimal("balance"));
-        user.setEmail(resultSet.getString("email"));
+        user.setLogin(resultSet.getString("email"));
         return user;
     }
 }

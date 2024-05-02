@@ -49,7 +49,7 @@ public class SpecificRepository {
     public Specific create(Specific specific) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
-            preparedStatement.setLong(1, specific.getEventId());
+            preparedStatement.setObject(1, specific.getEventId());
             preparedStatement.setString(2, specific.getDescription());
             preparedStatement.setInt(3, specific.getTicketCount());
             preparedStatement.setFloat(4, specific.getPrice());
@@ -92,7 +92,7 @@ public class SpecificRepository {
     public void update(Specific specific) {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setLong(1, specific.getEventId());
+            preparedStatement.setObject(1, specific.getEventId());
             preparedStatement.setString(2, specific.getDescription());
             preparedStatement.setInt(3, specific.getTicketCount());
             preparedStatement.setFloat(4, specific.getPrice());
@@ -118,7 +118,7 @@ public class SpecificRepository {
     private Specific buildSpecificEntity(ResultSet resultSet) throws SQLException {
         Specific specific = new Specific();
         specific.setId(resultSet.getLong("id"));
-        specific.setEventId(resultSet.getInt("event_id"));
+        specific.setEventId((UUID) resultSet.getObject("event_id"));
         specific.setDescription(resultSet.getString("description"));
         specific.setTicketCount(resultSet.getInt("ticket_count"));
         specific.setPrice(resultSet.getFloat("price"));
