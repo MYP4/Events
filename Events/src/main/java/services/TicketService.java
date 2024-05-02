@@ -1,4 +1,4 @@
-package data.repositories.services;
+package services;
 
 import data.entity.Specific;
 import data.entity.Ticket;
