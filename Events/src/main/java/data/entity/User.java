@@ -12,7 +12,6 @@ public class User {
     private BigDecimal balance;
     private String login;
     private String password;
-
     private UUID uid;
 
     public User(long id, String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String email, UUID uid) {

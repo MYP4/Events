@@ -2,6 +2,8 @@ package systems.servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import data.mappers.EventToEventModelMapper;
+import data.models.EventModel;
 import data.repositories.EventRepository;
 import data.entity.Event;
 import java.io.IOException;
@@ -13,20 +15,26 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import util.JspHelper;
 
-@WebServlet("/events")
+import static java.util.Arrays.stream;
+import static util.UrlPathUtil.EVENTS;
+
+@WebServlet(EVENTS)
 public class EventServlet extends HttpServlet {
 
     private final EventRepository eventRepository = new EventRepository();
+    private final EventToEventModelMapper eventToEventModelMapper = new EventToEventModelMapper();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Event> events = eventRepository.getAll();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        PrintWriter out = response.getWriter();
-        out.print(convertEventsToJson(events));
-        out.flush();
+        List<EventModel> events = eventRepository
+                .getAll()
+                .stream()
+                .map(eventToEventModelMapper::map)
+                .toList();;
+        request.setAttribute("events", events);
+        request.getRequestDispatcher(JspHelper.get("events")).forward(request, response);
     }
 
     @Override

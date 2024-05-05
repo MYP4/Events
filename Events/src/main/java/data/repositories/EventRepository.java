@@ -10,36 +10,32 @@ import util.ConnectionManager;
 public class EventRepository implements Repository<UUID, Event> {
 
     public static final String CREATE_SQL = """
-            INSERT INTO events(id, name, description, price, address, type, rating, admin_id, uid) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO events(id, name, description, admin_id, uid) 
+            VALUES (?,?,?,?,?);
             """;
 
     public static final String FIND_ALL_SQL = """
-            SELECT id, name, description, price, address, type, rating, admin_id, uid
+            SELECT id, name, description, admin_id, uid
             FROM events
             """;
 
     public static final String FIND_BY_ID_SQL = """
-            SELECT id, name, description, price, address, type, rating, admin_id, uid
+            SELECT id, name, description, admin_id, uid
             FROM events
-            WHERE uid = ?
+            WHERE uid =?
             """;
 
     public static final String UPDATE_SQL = """
             UPDATE events 
-            SET name = ?, 
-                description = ?, 
-                price = ?, 
-                address = ?, 
-                type = ?, 
-                rating = ?, 
-                admin_id = ? 
-            WHERE uid = ?;
+            SET name =?, 
+                description =?, 
+                admin_id =? 
+            WHERE uid =?;
             """;
 
     public static final String DELETE_SQL = """
             DELETE FROM events
-            WHERE uid = ?
+            WHERE uid =?
             """;
 
     public Event create(Event event) {
@@ -115,11 +111,11 @@ public class EventRepository implements Repository<UUID, Event> {
 
     private Event buildEventEntity(ResultSet resultSet) throws SQLException {
         Event event = new Event();
-        event.setId(resultSet.getInt("id"));
+        event.setId(resultSet.getLong("id"));
         event.setName(resultSet.getString("name"));
         event.setDescription(resultSet.getString("description"));
-        event.setAdminId(resultSet.getObject("admin_id", UUID.class));
-        event.setUid(resultSet.getObject("uid", UUID.class));
+        event.setAdminId(UUID.fromString(resultSet.getString("admin_id")));
+        event.setUid(UUID.fromString(resultSet.getString("uid")));
         return event;
     }
 }
