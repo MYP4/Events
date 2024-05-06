@@ -3,13 +3,13 @@ package data.entity;
 import java.util.UUID;
 
 public class Ticket {
-    private long id;
+    private Long id;
     private UUID userId;
     private UUID specificId;
     private int status;
     private UUID uid;
 
-    public Ticket(long id, UUID userId, UUID specificId, int status, UUID uid) {
+    public Ticket(Long id, UUID userId, UUID specificId, int status, UUID uid) {
         this.id = id;
         this.userId = userId;
         this.specificId = specificId;
@@ -20,11 +20,11 @@ public class Ticket {
     public Ticket() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

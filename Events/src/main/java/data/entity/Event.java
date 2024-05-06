@@ -3,7 +3,7 @@ package data.entity;
 import java.util.UUID;
 
 public class Event {
-    private long id;
+    private Long id;
     private String name;
     private String description;
     private UUID adminId;
@@ -20,11 +20,11 @@ public class Event {
     public Event() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -4,7 +4,7 @@ package data.entity;
 import java.util.UUID;
 
 public class Specific {
-    private long id;
+    private Long id;
     private UUID eventId;
     private String description;
     private int ticketCount;
@@ -25,11 +25,11 @@ public class Specific {
     public Specific() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

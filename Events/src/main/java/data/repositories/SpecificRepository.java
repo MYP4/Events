@@ -5,22 +5,25 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import data.exceptions.DBException;
+import org.apache.log4j.Logger;
 import util.ConnectionManager;
 
 public class SpecificRepository {
-
+    private static final Logger logger = Logger.getLogger(SpecificRepository.class);
     public static final String CREATE_SQL = """
-            INSERT INTO specifics(event_id, description, ticket_count, price, address, date, day_of_week, time, is_private, code, rating, uid) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO specifics(event_id, description, ticket_count, price, address, uid) 
+            VALUES (?, ?, ?, ?, ?, ?);
             """;
 
     public static final String FIND_ALL_SQL = """
-            SELECT id, event_id, description, ticket_count, price, address, date, day_of_week, time, is_private, code, rating, uid
+            SELECT id, event_id, description, ticket_count, price, address, uid
             FROM specifics
             """;
 
     public static final String FIND_BY_ID_SQL = """
-            SELECT id, event_id, description, ticket_count, price, address, date, day_of_week, time, is_private, code, rating, uid
+            SELECT id, event_id, description, ticket_count, price, address, uid
             FROM specifics
             WHERE uid = ?
             """;
@@ -32,12 +35,6 @@ public class SpecificRepository {
                 ticket_count = ?, 
                 price = ?, 
                 address = ?, 
-                date = ?, 
-                day_of_week = ?, 
-                time = ?, 
-                is_private = ?, 
-                code = ?, 
-                rating = ? 
             WHERE uid = ?;
             """;
 
@@ -46,9 +43,10 @@ public class SpecificRepository {
             WHERE uid = ?
             """;
 
-    public Specific create(Specific specific) {
+    public Specific create(Specific specific) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
+
             preparedStatement.setObject(1, specific.getEventId());
             preparedStatement.setString(2, specific.getDescription());
             preparedStatement.setInt(3, specific.getTicketCount());
@@ -56,12 +54,19 @@ public class SpecificRepository {
             preparedStatement.setString(5, specific.getAddress());
             preparedStatement.setObject(6, specific.getUid());
             preparedStatement.executeUpdate();
+
+            final ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                specific.setId(generatedKeys.getObject(1, Long.class));
+            }
+
             return specific;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
-    public Specific getById(UUID id) {
+    public Specific getById(UUID id) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setObject(1, id);
@@ -71,11 +76,12 @@ public class SpecificRepository {
             }
             return null;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    public List<Specific> getAll() {
+    public List<Specific> getAll() throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -85,11 +91,12 @@ public class SpecificRepository {
             }
             return result;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    public void update(Specific specific) {
+    public void update(Specific specific) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
             preparedStatement.setObject(1, specific.getEventId());
@@ -100,17 +107,19 @@ public class SpecificRepository {
             preparedStatement.setObject(6, specific.getUid());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
-    public boolean delete(UUID id) {
+    public boolean delete(UUID id) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setObject(1, id);
             int executeUpdate = preparedStatement.executeUpdate();
             return executeUpdate > 0;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }

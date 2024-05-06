@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.UUID;
 
 import data.entity.UserRole;
+import data.exceptions.DBException;
+import org.apache.log4j.Logger;
 import util.ConnectionManager;
 
 public class UserRepository implements Repository<UUID, User> {
-
+    private static final Logger logger = Logger.getLogger(UserRepository.class);
     public static final String CREATE_SQL = """
             INSERT INTO users(id, first_name, second_name, role, account_number, balance, email) 
             VALUES (?, ?, ?, ?, ?, ?, ?);
@@ -43,25 +45,30 @@ public class UserRepository implements Repository<UUID, User> {
             WHERE id = ?
             """;
 
-    public User create(User user) {
+    public User create(User user) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
-            preparedStatement.setObject(1, user.getId());
-            preparedStatement.setString(2, user.getFirstName());
-            preparedStatement.setString(3, user.getSecondName());
-            preparedStatement.setObject(4, user.getRole());
-            preparedStatement.setString(5, user.getAccountNumber());
-            preparedStatement.setBigDecimal(6, user.getBalance());
-            preparedStatement.setString(7, user.getLogin());
+            preparedStatement.setString(1, user.getFirstName());
+            preparedStatement.setString(2, user.getSecondName());
+            preparedStatement.setObject(3, user.getRole());
+            preparedStatement.setString(4, user.getAccountNumber());
+            preparedStatement.setBigDecimal(5, user.getBalance());
+            preparedStatement.setString(6, user.getLogin());
             preparedStatement.executeUpdate();
+
+            final ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                user.setId(generatedKeys.getObject(1, Long.class));
+            }
             return user;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public User getById(UUID id) {
+    public User getById(UUID id) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setObject(1, id);
@@ -71,12 +78,13 @@ public class UserRepository implements Repository<UUID, User> {
             }
             return null;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public List<User> getAll() {
+    public List<User> getAll() throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -86,12 +94,13 @@ public class UserRepository implements Repository<UUID, User> {
             }
             return result;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void update(User user) {
+    public void update(User user) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
             preparedStatement.setString(1, user.getFirstName());
@@ -103,18 +112,20 @@ public class UserRepository implements Repository<UUID, User> {
             preparedStatement.setObject(7, user.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public boolean delete(UUID id) {
+    public boolean delete(UUID id) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setObject(1, id);
             int executeUpdate = preparedStatement.executeUpdate();
             return executeUpdate > 0;
         } catch (SQLException e) {
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -122,7 +133,7 @@ public class UserRepository implements Repository<UUID, User> {
 
     private User buildUserEntity(ResultSet resultSet) throws SQLException {
         User user = new User();
-        user.setId(resultSet.getInt("id"));
+        user.setId(resultSet.getLong("id"));
         user.setFirstName(resultSet.getString("first_name"));
         user.setSecondName(resultSet.getString("second_name"));
         user.setRole(UserRole.find(resultSet.getString("user_role")).orElse(null));

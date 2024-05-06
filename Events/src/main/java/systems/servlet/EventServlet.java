@@ -2,14 +2,11 @@ package systems.servlet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import data.entity.Event;
+import data.exceptions.DBException;
 import data.mappers.EventToEventModelMapper;
 import data.models.EventModel;
 import data.repositories.EventRepository;
-import data.entity.Event;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.UUID;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,7 +14,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import util.JspHelper;
 
-import static java.util.Arrays.stream;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
 import static util.UrlPathUtil.EVENTS;
 
 @WebServlet(EVENTS)
@@ -27,38 +27,55 @@ public class EventServlet extends HttpServlet {
     private final EventToEventModelMapper eventToEventModelMapper = new EventToEventModelMapper();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<EventModel> events = eventRepository
-                .getAll()
-                .stream()
-                .map(eventToEventModelMapper::map)
-                .toList();;
-        request.setAttribute("events", events);
-        request.getRequestDispatcher(JspHelper.get("events")).forward(request, response);
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response) throws ServletException, IOException {
+        try {
+            List<EventModel> events = eventRepository
+                    .getAll()
+                    .stream()
+                    .map(eventToEventModelMapper::map)
+                    .toList();;
+            request.setAttribute("events", events);
+            request.getRequestDispatcher(JspHelper.get("events")).forward(request, response);
+        } catch (DBException e) {
+
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Event event = parseJsonToEvent(request.getReader());
-        eventRepository.create(event);
-        response.setStatus(HttpServletResponse.SC_CREATED);
+        try {
+            Event event = parseJsonToEvent(request.getReader());
+            eventRepository.create(event);
+            response.setStatus(HttpServletResponse.SC_CREATED);
+        } catch (DBException e) {
+
+        }
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Event event = parseJsonToEvent(request.getReader());
-        eventRepository.update(event);
-        response.setStatus(HttpServletResponse.SC_OK);
+        try {
+            Event event = parseJsonToEvent(request.getReader());
+            eventRepository.update(event);
+            response.setStatus(HttpServletResponse.SC_OK);
+        } catch (DBException e) {
+
+        }
     }
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        UUID id = UUID.fromString(request.getParameter("id"));
-        boolean deleted = eventRepository.delete(id);
-        if (deleted) {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        try {
+            UUID id = UUID.fromString(request.getParameter("id"));
+            boolean deleted = eventRepository.delete(id);
+            if (deleted) {
+                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            }
+        } catch (DBException e) {
+
         }
     }
 
