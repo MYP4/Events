@@ -14,14 +14,14 @@ public class User {
     private String password;
     private UUID uid;
 
-    public User(Long id, String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String email, UUID uid) {
+    public User(Long id, String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String login, UUID uid) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
         this.role = role;
         this.accountNumber = accountNumber;
         this.balance = balance;
-        this.login = email;
+        this.login = login;
         this.uid = uid;
     }
 

@@ -1,6 +1,7 @@
 package services;
 
 import data.entity.User;
+import data.entity.UserRole;
 import data.exceptions.CreationException;
 import data.exceptions.DBException;
 import data.mappers.CreateUserModelToUserMapper;
@@ -39,6 +40,26 @@ public class UserService {
             logger.error(e.getMessage());
             throw new DBException(e.getMessage());
         }
+    }
+
+    public UserModel getByLogin(String login) throws DBException {
+        try {
+            return userToUserModelMapper.map(userRepository.getByLogin(login));
+        } catch (DBException e) {
+            logger.error(e.getMessage());
+            throw new DBException(e.getMessage());
+        }
+    }
+
+    public UserModel getByLoginPassword(String login, String password) throws DBException {
+        if (login.isEmpty() || password.isEmpty()) {
+            return null;
+        }
+        User user = userRepository.getByLoginPassword(login, password);
+        if (user == null) {
+            throw new DBException("user not found");
+        }
+        return userToUserModelMapper.map(user);
     }
 
     public UserModel getById(UUID id) throws DBException {

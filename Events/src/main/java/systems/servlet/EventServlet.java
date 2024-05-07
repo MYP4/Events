@@ -12,17 +12,18 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
+import services.EventService;
 import util.JspHelper;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-import static util.UrlPathUtil.EVENTS;
 
-@WebServlet(EVENTS)
+@WebServlet("/events")
 public class EventServlet extends HttpServlet {
-
+    private static final org.apache.log4j.Logger logger = Logger.getLogger(EventServlet.class);
     private final EventRepository eventRepository = new EventRepository();
     private final EventToEventModelMapper eventToEventModelMapper = new EventToEventModelMapper();
 
@@ -38,7 +39,7 @@ public class EventServlet extends HttpServlet {
             request.setAttribute("events", events);
             request.getRequestDispatcher(JspHelper.get("events")).forward(request, response);
         } catch (DBException e) {
-
+            logger.error(e.getMessage());
         }
     }
 
@@ -49,7 +50,7 @@ public class EventServlet extends HttpServlet {
             eventRepository.create(event);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (DBException e) {
-
+            logger.error(e.getMessage());
         }
     }
 
@@ -60,7 +61,7 @@ public class EventServlet extends HttpServlet {
             eventRepository.update(event);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (DBException e) {
-
+            logger.error(e.getMessage());
         }
     }
 
@@ -75,7 +76,7 @@ public class EventServlet extends HttpServlet {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         } catch (DBException e) {
-
+            logger.error(e.getMessage());
         }
     }
 
