@@ -20,13 +20,13 @@ public class UserRepository implements Repository<UUID, User> {
 
     public static final String FIND_ALL_SQL = """
             SELECT id, first_name, second_name, role, account_number, balance, login, password, uid
-            FROM users
+            FROM users;
             """;
 
     public static final String FIND_BY_ID_SQL = """
             SELECT id, first_name, second_name, role, account_number, balance, login, password, uid
             FROM users
-            WHERE id = ?
+            WHERE id = ?;
             """;
 
     public static final String FIND_BY_EMAIL_AND_PASSWORD_SQL = """
@@ -50,12 +50,12 @@ public class UserRepository implements Repository<UUID, User> {
                 balance = ?, 
                 login = ?,
                 password = ?,
-            WHERE id = ?;
+            WHERE uid = ?;
             """;
 
     public static final String DELETE_SQL = """
             DELETE FROM users
-            WHERE id = ?
+            WHERE uid =?
             """;
 
     @Override
@@ -190,6 +190,7 @@ public class UserRepository implements Repository<UUID, User> {
         user.setAccountNumber(resultSet.getString("account_number"));
         user.setBalance(resultSet.getBigDecimal("balance"));
         user.setLogin(resultSet.getString("login"));
+        user.setUid((UUID)resultSet.getObject("uid"));
         return user;
     }
 }

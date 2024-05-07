@@ -44,7 +44,8 @@ public class EventServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response) throws ServletException, IOException {
         try {
             Event event = parseJsonToEvent(request.getReader());
             eventRepository.create(event);
@@ -55,7 +56,8 @@ public class EventServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request,
+                         HttpServletResponse response) throws ServletException, IOException {
         try {
             Event event = parseJsonToEvent(request.getReader());
             eventRepository.update(event);
@@ -66,7 +68,8 @@ public class EventServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request,
+                            HttpServletResponse response) throws ServletException, IOException {
         try {
             UUID id = UUID.fromString(request.getParameter("id"));
             boolean deleted = eventRepository.delete(id);

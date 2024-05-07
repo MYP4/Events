@@ -3,6 +3,8 @@ package systems.servlet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import data.exceptions.DBException;
+import data.mappers.SpecificToSpecificModelMapper;
+import data.models.SpecificModel;
 import data.repositories.SpecificRepository;
 import data.entity.Specific;
 import java.io.IOException;
@@ -15,21 +17,24 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import util.JspHelper;
 
 @WebServlet("/specifics")
 public class SpecificServlet extends HttpServlet {
     private static final org.apache.log4j.Logger logger = Logger.getLogger(SpecificServlet.class);
     private final SpecificRepository specificRepository = new SpecificRepository();
+    private final SpecificToSpecificModelMapper specificToSpecificModelMapper = new SpecificToSpecificModelMapper();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            List<Specific> specifics = specificRepository.getAll();
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            PrintWriter out = response.getWriter();
-            out.print(convertSpecificsToJson(specifics));
-            out.flush();
+            List<SpecificModel> specifics = specificRepository
+                    .getAll()
+                    .stream()
+                    .map(specificToSpecificModelMapper::map)
+                    .toList();
+            request.setAttribute("specifics", specifics);
+            request.getRequestDispatcher(JspHelper.get("specifics")).forward(request, response);
         } catch (DBException e) {
             logger.error(e.getMessage());
         }

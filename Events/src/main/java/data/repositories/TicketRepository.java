@@ -14,17 +14,17 @@ public class TicketRepository {
     private static final Logger logger = Logger.getLogger(TicketRepository.class);
 
     public static final String CREATE_SQL = """
-            INSERT INTO tickets(user_id, specific_id, status, feedback, rating, uid) 
-            VALUES (?, ?, ?, ?, ?, ?);
+            INSERT INTO tickets(user_id, specific_id, status, uid) 
+            VALUES (?, ?, ?, ?);
             """;
 
     public static final String FIND_ALL_SQL = """
-            SELECT id, user_id, specific_id, status, feedback, rating, uid
+            SELECT id, user_id, specific_id, status,  uid
             FROM tickets
             """;
 
     public static final String FIND_BY_ID_SQL = """
-            SELECT id, user_id, specific_id, status, feedback, rating, uid
+            SELECT id, user_id, specific_id, status, uid
             FROM tickets
             WHERE uid = ?
             """;
@@ -34,8 +34,6 @@ public class TicketRepository {
             SET user_id = ?, 
                 specific_id = ?, 
                 status = ?, 
-                feedback = ?, 
-                rating = ? 
             WHERE uid = ?;
             """;
 

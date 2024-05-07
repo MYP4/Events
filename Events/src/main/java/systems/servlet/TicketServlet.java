@@ -3,6 +3,8 @@ package systems.servlet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import data.exceptions.DBException;
+import data.mappers.TicketToTicketModelMapper;
+import data.models.TicketModel;
 import data.repositories.TicketRepository;
 import data.entity.Ticket;
 import java.io.IOException;
@@ -15,21 +17,24 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import util.JspHelper;
 
 @WebServlet("/tickets")
 public class TicketServlet extends HttpServlet {
     private static final org.apache.log4j.Logger logger = Logger.getLogger(TicketServlet.class);
     private final TicketRepository ticketRepository = new TicketRepository();
+    private final TicketToTicketModelMapper ticketToTicketModelMapper = new TicketToTicketModelMapper();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            List<Ticket> tickets = ticketRepository.getAll();
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            PrintWriter out = response.getWriter();
-            out.print(convertTicketsToJson(tickets));
-            out.flush();
+            List<TicketModel> tickets = ticketRepository
+                    .getAll()
+                    .stream()
+                    .map(ticketToTicketModelMapper::map)
+                    .toList();
+            request.setAttribute("tickets", tickets);
+            request.getRequestDispatcher(JspHelper.get("tickets")).forward(request, response);
         } catch (DBException e) {
             logger.error(e.getMessage());
         }

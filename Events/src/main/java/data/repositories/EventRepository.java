@@ -45,7 +45,7 @@ public class EventRepository implements Repository<UUID, Event> {
 
     public Event create(Event event) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
             preparedStatement.setString(1, event.getName());
             preparedStatement.setString(2, event.getDescription());
             preparedStatement.setObject(3, event.getAdminId());
@@ -66,7 +66,7 @@ public class EventRepository implements Repository<UUID, Event> {
     @Override
     public Event getById(UUID id) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setObject(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -82,7 +82,7 @@ public class EventRepository implements Repository<UUID, Event> {
     @Override
     public List<Event> getAll() throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Event> result = new ArrayList<>();
             while (resultSet.next()) {
@@ -98,7 +98,7 @@ public class EventRepository implements Repository<UUID, Event> {
     @Override
     public void update(Event event) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
             preparedStatement.setString(1, event.getName());
             preparedStatement.setString(2, event.getDescription());
             preparedStatement.setObject(3, event.getAdminId());

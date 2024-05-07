@@ -3,6 +3,8 @@ package systems.servlet;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import data.exceptions.DBException;
+import data.mappers.UserToUserModelMapper;
+import data.models.UserModel;
 import data.repositories.UserRepository;
 import data.entity.User;
 import java.io.IOException;
@@ -15,21 +17,24 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import util.JspHelper;
 
 @WebServlet("/users")
 public class UserServlet extends HttpServlet {
     private static final org.apache.log4j.Logger logger = Logger.getLogger(UserServlet.class);
-    private final UserRepository userDao = new UserRepository();
+    private final UserRepository userRepository = new UserRepository();
+    private final UserToUserModelMapper userToUserModelMapper = new UserToUserModelMapper();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            List<User> users = userDao.getAll();
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
-            PrintWriter out = response.getWriter();
-            out.print(convertUsersToJson(users));
-            out.flush();
+            List<UserModel> users = userRepository
+                    .getAll()
+                    .stream()
+                    .map(userToUserModelMapper::map)
+                    .toList();
+            request.setAttribute("users", users);
+            request.getRequestDispatcher(JspHelper.get("users")).forward(request, response);
         } catch (DBException e) {
             logger.error(e.getMessage());
         }
@@ -39,7 +44,7 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             User user = parseJsonToUser(request.getReader());
-            userDao.create(user);
+            userRepository.create(user);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (DBException e) {
             logger.error(e.getMessage());
@@ -50,7 +55,7 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             User user = parseJsonToUser(request.getReader());
-            userDao.update(user);
+            userRepository.update(user);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (DBException e) {
             logger.error(e.getMessage());
@@ -61,7 +66,7 @@ public class UserServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             UUID id = UUID.fromString(request.getParameter("id"));
-            boolean deleted = userDao.delete(id);
+            boolean deleted = userRepository.delete(id);
             if (deleted) {
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {

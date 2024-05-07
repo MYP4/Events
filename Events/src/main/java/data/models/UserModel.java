@@ -11,19 +11,19 @@ public class UserModel {
     private UserRole role;
     private String accountNumber;
     private BigDecimal balance;
-    private String email;
+    private String login;
     private UUID uid;
 
     public UserModel() {
     }
 
-    public UserModel(String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String email, UUID uid) {
+    public UserModel(String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String login, UUID uid) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.role = role;
         this.accountNumber = accountNumber;
         this.balance = balance;
-        this.email = email;
+        this.login = login;
         this.uid = uid;
     }
 
@@ -67,12 +67,12 @@ public class UserModel {
         this.balance = balance;
     }
 
-    public String getEmail() {
-        return email;
+    public String getLogin() {
+        return login;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setLogin(String email) {
+        this.login = email;
     }
 
     public UUID getUid() {

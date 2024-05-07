@@ -17,7 +17,7 @@ public class UserModelToUserMapper implements Mapper<UserModel, User> {
         user.setRole(userModel.getRole());
         user.setAccountNumber(userModel.getAccountNumber());
         user.setBalance(userModel.getBalance());
-        user.setLogin(userModel.getEmail());
+        user.setLogin(userModel.getLogin());
         user.setUid(userModel.getUid());
 
         return user;

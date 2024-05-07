@@ -1,5 +1,6 @@
 <%@ page import="data.models.EventModel" %>
 <%@ page import="java.util.List" %>
+<%@ page import="data.models.TicketModel" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <html>
@@ -36,18 +37,18 @@
 
 <table>
     <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Admin ID</th>
-        <th>UID</th>
+        <th>UserId</th>
+        <th>SpecificId</th>
+        <th>Status</th>
+        <th>Uid</th>
     </tr>
-    <% List<EventModel> events = (List<EventModel>) request.getAttribute("events"); %>
-    <% for (EventModel event : events) { %>
+    <% List<TicketModel> tickets = (List<TicketModel>) request.getAttribute("tickets"); %>
+    <% for (TicketModel ticket : tickets) { %>
     <tr>
-        <td><%= event.getName() %></td>
-        <td><%= event.getDescription() %></td>
-        <td><%= event.getAdminId() %></td>
-        <td><%= event.getUid() %></td>
+        <td><%= ticket.getUserId() %></td>
+        <td><%= ticket.getSpecificId() %></td>
+        <td><%= ticket.getStatus() %></td>
+        <td><%= ticket.getUid() %></td>
     </tr>
     <% } %>
 </table>
