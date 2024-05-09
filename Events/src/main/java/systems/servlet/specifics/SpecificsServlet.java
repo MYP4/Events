@@ -1,14 +1,15 @@
-package systems.servlet;
+package systems.servlet.specifics;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import data.exceptions.DBException;
+import data.mappers.SpecificModelToSpecificMapper;
 import data.mappers.SpecificToSpecificModelMapper;
 import data.models.SpecificModel;
+import data.repositories.EventRepository;
 import data.repositories.SpecificRepository;
 import data.entity.Specific;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.UUID;
 import jakarta.servlet.ServletException;
@@ -17,22 +18,22 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import services.SpecificService;
 import util.JspHelper;
 
 @WebServlet("/specifics")
-public class SpecificServlet extends HttpServlet {
-    private static final org.apache.log4j.Logger logger = Logger.getLogger(SpecificServlet.class);
-    private final SpecificRepository specificRepository = new SpecificRepository();
-    private final SpecificToSpecificModelMapper specificToSpecificModelMapper = new SpecificToSpecificModelMapper();
+public class SpecificsServlet extends HttpServlet {
+    private static final org.apache.log4j.Logger logger = Logger.getLogger(SpecificsServlet.class);
+    private final SpecificService specificService = new SpecificService(
+        new EventRepository(),
+        new SpecificRepository(),
+        new SpecificModelToSpecificMapper(),
+        new SpecificToSpecificModelMapper());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            List<SpecificModel> specifics = specificRepository
-                    .getAll()
-                    .stream()
-                    .map(specificToSpecificModelMapper::map)
-                    .toList();
+            List<SpecificModel> specifics = specificService.getAll();
             request.setAttribute("specifics", specifics);
             request.getRequestDispatcher(JspHelper.get("specifics")).forward(request, response);
         } catch (DBException e) {
@@ -44,7 +45,7 @@ public class SpecificServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             Specific specific = parseJsonToSpecific(request.getReader());
-            specificRepository.create(specific);
+            specificService.create(specific);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (DBException e) {
             logger.error(e.getMessage());
@@ -55,7 +56,7 @@ public class SpecificServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             Specific specific = parseJsonToSpecific(request.getReader());
-            specificRepository.update(specific);
+            specificService.update(specific);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (DBException e) {
             logger.error(e.getMessage());
@@ -66,32 +67,10 @@ public class SpecificServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             UUID id = UUID.fromString(request.getParameter("id"));
-            boolean deleted = specificRepository.delete(id);
-            if (deleted) {
-                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            } else {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
+            specificService.delete(id);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (DBException e) {
             logger.error(e.getMessage());
-        }
-    }
-
-    private String convertSpecificsToJson(List<Specific> specifics) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(specifics);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error converting specifics to JSON", e);
-        }
-    }
-
-    private Specific parseJsonToSpecific(java.io.BufferedReader reader) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(reader, Specific.class);
-        } catch (JsonProcessingException e) {
-            throw new IOException("Error parsing JSON to Specific", e);
         }
     }
 }

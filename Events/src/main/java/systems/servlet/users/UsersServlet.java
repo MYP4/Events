@@ -1,14 +1,19 @@
-package systems.servlet;
+package systems.servlet.users;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import data.exceptions.DBException;
+import data.mappers.CreateUserModelToUserMapper;
+import data.mappers.TicketModelToTicketMapper;
+import data.mappers.TicketToTicketModelMapper;
+import data.mappers.UserModelToUserMapper;
 import data.mappers.UserToUserModelMapper;
 import data.models.UserModel;
+import data.repositories.SpecificRepository;
+import data.repositories.TicketRepository;
 import data.repositories.UserRepository;
 import data.entity.User;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.UUID;
 import jakarta.servlet.ServletException;
@@ -17,22 +22,23 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
+import services.TicketService;
+import services.UserService;
 import util.JspHelper;
 
 @WebServlet("/users")
-public class UserServlet extends HttpServlet {
-    private static final org.apache.log4j.Logger logger = Logger.getLogger(UserServlet.class);
-    private final UserRepository userRepository = new UserRepository();
-    private final UserToUserModelMapper userToUserModelMapper = new UserToUserModelMapper();
+public class UsersServlet extends HttpServlet {
+    private static final org.apache.log4j.Logger logger = Logger.getLogger(UsersServlet.class);
+    private final UserService userService = new UserService(
+        new UserRepository(),
+        new UserToUserModelMapper(),
+        new UserModelToUserMapper(),
+        new CreateUserModelToUserMapper());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            List<UserModel> users = userRepository
-                    .getAll()
-                    .stream()
-                    .map(userToUserModelMapper::map)
-                    .toList();
+            List<UserModel> users = userService.getAll();
             request.setAttribute("users", users);
             request.getRequestDispatcher(JspHelper.get("users")).forward(request, response);
         } catch (DBException e) {
@@ -44,7 +50,7 @@ public class UserServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             User user = parseJsonToUser(request.getReader());
-            userRepository.create(user);
+            userService.create(user);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (DBException e) {
             logger.error(e.getMessage());
@@ -55,7 +61,7 @@ public class UserServlet extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             User user = parseJsonToUser(request.getReader());
-            userRepository.update(user);
+            userService.update(user);
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (DBException e) {
             logger.error(e.getMessage());
@@ -66,7 +72,7 @@ public class UserServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             UUID id = UUID.fromString(request.getParameter("id"));
-            boolean deleted = userRepository.delete(id);
+            boolean deleted = userService.delete(id);
             if (deleted) {
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
             } else {
@@ -74,24 +80,6 @@ public class UserServlet extends HttpServlet {
             }
         } catch (DBException e) {
             logger.error(e.getMessage());
-        }
-    }
-
-    private String convertUsersToJson(List<User> users) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.writeValueAsString(users);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error converting users to JSON", e);
-        }
-    }
-
-    private User parseJsonToUser(java.io.BufferedReader reader) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(reader, User.class);
-        } catch (JsonProcessingException e) {
-            throw new IOException("Error parsing JSON to User", e);
         }
     }
 }

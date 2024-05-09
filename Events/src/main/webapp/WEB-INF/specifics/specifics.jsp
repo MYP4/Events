@@ -1,10 +1,12 @@
-<%@ page import="data.models.EventModel" %>
 <%@ page import="java.util.List" %>
+<%@ page import="data.models.SpecificModel" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <html>
 <head>
-    <title>Events</title>
+    <title>Specifics</title>
 </head>
 <body>
 <h1>EventPad!</h1><br/>
@@ -36,21 +38,24 @@
 
 <table>
     <tr>
-        <th>Name</th>
+        <th>EventUid</th>
         <th>Description</th>
-        <th>Admin ID</th>
-        <th>UID</th>
+        <th>TicketCount</th>
+        <th>Price</th>
+        <th>Address</th>
+        <th>Uid</th>
     </tr>
-    <% List<EventModel> events = (List<EventModel>) request.getAttribute("events"); %>
-    <% for (EventModel event : events) { %>
+    <% List<SpecificModel> events = (List<SpecificModel>) request.getAttribute("specifics"); %>
+    <% for (SpecificModel event : events) { %>
     <tr>
-        <td><%= event.getName() %></td>
+        <td><%= event.getEventId() %></td>
         <td><%= event.getDescription() %></td>
-        <td><%= event.getAdminId() %></td>
+        <td><%= event.getTicketCount() %></td>
+        <td><%= event.getPrice() %></td>
+        <td><%= event.getAddress() %></td>
         <td><%= event.getUid() %></td>
     </tr>
     <% } %>
 </table>
 </body>
 </html>
-
