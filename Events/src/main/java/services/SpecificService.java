@@ -59,8 +59,8 @@ public class SpecificService {
             }
             Specific specific = specificModelToSpecificMapper.map(specificModel);
             specific.setUid(UUID.randomUUID());
-            return  specificToSpecificModelMapper.map(specificRepository.create(specific));
-
+            specific = specificRepository.create(specific);
+            return specificToSpecificModelMapper.map(specific);
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DBException("Failed to create specific: " + e.getMessage());

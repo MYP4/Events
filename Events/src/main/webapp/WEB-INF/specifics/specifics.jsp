@@ -36,6 +36,28 @@
     </tr>
 </table>
 
+<c:if test="${sessionScope.user.role == 'ADMINISTRATOR'}">
+    <table>
+        <tr>
+            <th>
+                <form action="${pageContext.request.contextPath}/create-specific" method="get">
+                    <button type="submit">Create Specific</button>
+                </form>
+            </th>
+            <th>
+                <form action="${pageContext.request.contextPath}/update-specific" method="get">
+                    <button type="submit">Update Specific</button>
+                </form>
+            </th>
+            <th>
+                <form action="${pageContext.request.contextPath}/delete-specific" method="get">
+                    <button type="submit">Delete Specific</button>
+                </form>
+            </th>
+        </tr>
+    </table>
+</c:if>
+
 <table>
     <tr>
         <th>EventUid</th>

@@ -16,7 +16,7 @@ public class SpecificModelToSpecificMapper implements Mapper<SpecificModel, Spec
         specific.setTicketCount(specificModel.getTicketCount());
         specific.setPrice(specificModel.getPrice());
         specific.setAddress(specificModel.getAddress());
-
+        specific.setUid(specificModel.getUid());
         return specific;
     }
 }

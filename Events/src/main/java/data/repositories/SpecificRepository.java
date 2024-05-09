@@ -36,8 +36,8 @@ public class SpecificRepository {
                 description = ?, 
                 ticket_count = ?, 
                 price = ?, 
-                address = ?, 
-            WHERE uid = ?;
+                address = ? 
+            WHERE uid = ?
             """;
 
     public static final String DELETE_SQL = """
@@ -100,7 +100,7 @@ public class SpecificRepository {
 
     public void update(Specific specific) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
             preparedStatement.setObject(1, specific.getEventId());
             preparedStatement.setString(2, specific.getDescription());
             preparedStatement.setInt(3, specific.getTicketCount());

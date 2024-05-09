@@ -43,19 +43,19 @@ public class CreateSpecificServlet extends HttpServlet {
             SpecificModel specific = parseJsonToSpecificModel(request);
             specificService.create(specific);
             response.setStatus(HttpServletResponse.SC_CREATED);
+            response.sendRedirect(request.getContextPath() + "/specifics");
         } catch (DBException e) {
             logger.error(e.getMessage());
         }
     }
 
     private SpecificModel parseJsonToSpecificModel(HttpServletRequest request) {
-        UUID eventId = UUID.fromString(request.getParameter("event_id"));
+        UUID eventId = UUID.fromString(request.getParameter("eventId"));
         String description = request.getParameter("description");
-        int ticketCount = Integer.parseInt(request.getParameter("ticket_count"));
+        int ticketCount = Integer.parseInt(request.getParameter("ticketCount"));
         BigDecimal price = new BigDecimal(request.getParameter("price"));
         String address = request.getParameter("address");
-        UUID uid = UUID.fromString(request.getParameter("uid"));
 
-        return new SpecificModel(eventId, description, ticketCount, price, address, uid);
+        return new SpecificModel(eventId, description, ticketCount, price, address, null);
     }
 }

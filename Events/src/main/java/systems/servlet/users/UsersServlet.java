@@ -41,7 +41,7 @@ public class UsersServlet extends HttpServlet {
         try {
             List<UserModel> users = userService.getAll();
             request.setAttribute("users", users);
-            request.getRequestDispatcher(JspHelper.get("users")).forward(request, response);
+            request.getRequestDispatcher(JspHelper.get("users/users")).forward(request, response);
         } catch (DBException e) {
             logger.error(e.getMessage());
         }

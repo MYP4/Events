@@ -39,7 +39,7 @@ public class TicketsServlet extends HttpServlet {
         try {
             List<TicketModel> tickets = ticketService.getAll();
             request.setAttribute("tickets", tickets);
-            request.getRequestDispatcher(JspHelper.get("tickets")).forward(request, response);
+            request.getRequestDispatcher(JspHelper.get("tickets/tickets")).forward(request, response);
         } catch (DBException e) {
             logger.error(e.getMessage());
         }

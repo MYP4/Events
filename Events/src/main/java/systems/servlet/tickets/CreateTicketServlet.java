@@ -38,7 +38,7 @@ public class CreateTicketServlet extends HttpServlet {
         try {
             List<TicketModel> tickets = ticketService.getAll();
             request.setAttribute("tickets", tickets);
-            request.getRequestDispatcher(JspHelper.get("tickets")).forward(request, response);
+            request.getRequestDispatcher(JspHelper.get("tickets/createTicket")).forward(request, response);
         } catch (DBException e) {
             logger.error(e.getMessage());
         }

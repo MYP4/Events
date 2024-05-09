@@ -53,8 +53,8 @@ public class CreateEventServlet extends HttpServlet {
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         UUID adminId = UUID.fromString(request.getParameter("adminId"));
-        UUID uid = UUID.fromString(request.getParameter("uid"));
+        //UUID uid = UUID.fromString(request.getParameter("uid"));
 
-        return new EventModel(name, description, adminId, uid);
+        return new EventModel(name, description, adminId, null);
     }
 }
