@@ -6,10 +6,12 @@ import data.exceptions.DBException;
 import data.mappers.SpecificModelToSpecificMapper;
 import data.mappers.SpecificToSpecificModelMapper;
 import data.models.SpecificModel;
+import data.models.TicketModel;
 import data.repositories.EventRepository;
 import data.repositories.SpecificRepository;
 import data.entity.Specific;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import jakarta.servlet.ServletException;
@@ -35,7 +37,7 @@ public class SpecificsServlet extends HttpServlet {
         try {
             List<SpecificModel> specifics = specificService.getAll();
             request.setAttribute("specifics", specifics);
-            request.getRequestDispatcher(JspHelper.get("specifics")).forward(request, response);
+            request.getRequestDispatcher(JspHelper.get("specifics/specifics")).forward(request, response);
         } catch (DBException e) {
             logger.error(e.getMessage());
         }
@@ -44,7 +46,7 @@ public class SpecificsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            Specific specific = parseJsonToSpecific(request.getReader());
+            SpecificModel specific = parseJsonToSpecificModel(request);
             specificService.create(specific);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (DBException e) {
@@ -52,25 +54,14 @@ public class SpecificsServlet extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            Specific specific = parseJsonToSpecific(request.getReader());
-            specificService.update(specific);
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
-    }
+    private SpecificModel parseJsonToSpecificModel(HttpServletRequest request) {
+        UUID eventId = UUID.fromString(request.getParameter("event_id"));
+        String description = request.getParameter("description");
+        int ticketCount = Integer.parseInt(request.getParameter("ticket_count"));
+        BigDecimal price = new BigDecimal(request.getParameter("price"));
+        String address = request.getParameter("address");
+        UUID uid = UUID.fromString(request.getParameter("uid"));
 
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            UUID id = UUID.fromString(request.getParameter("id"));
-            specificService.delete(id);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
+        return new SpecificModel(eventId, description, ticketCount, price, address, uid);
     }
 }

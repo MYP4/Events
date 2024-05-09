@@ -8,6 +8,7 @@ import data.mappers.TicketModelToTicketMapper;
 import data.mappers.TicketToTicketModelMapper;
 import data.mappers.UserModelToUserMapper;
 import data.mappers.UserToUserModelMapper;
+import data.models.CreateUserModel;
 import data.models.UserModel;
 import data.repositories.SpecificRepository;
 import data.repositories.TicketRepository;
@@ -41,43 +42,6 @@ public class UsersServlet extends HttpServlet {
             List<UserModel> users = userService.getAll();
             request.setAttribute("users", users);
             request.getRequestDispatcher(JspHelper.get("users")).forward(request, response);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            User user = parseJsonToUser(request.getReader());
-            userService.create(user);
-            response.setStatus(HttpServletResponse.SC_CREATED);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            User user = parseJsonToUser(request.getReader());
-            userService.update(user);
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            UUID id = UUID.fromString(request.getParameter("id"));
-            boolean deleted = userService.delete(id);
-            if (deleted) {
-                response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-            } else {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            }
         } catch (DBException e) {
             logger.error(e.getMessage());
         }

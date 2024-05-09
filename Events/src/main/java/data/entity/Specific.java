@@ -1,6 +1,7 @@
 package data.entity;
 
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class Specific {
@@ -8,11 +9,11 @@ public class Specific {
     private UUID eventId;
     private String description;
     private int ticketCount;
-    private float price;
+    private BigDecimal price;
     private String address;
     private UUID uid;
 
-    public Specific(long id, UUID eventId, String description, int ticketCount, float price, String address, UUID uid) {
+    public Specific(long id, UUID eventId, String description, int ticketCount, BigDecimal price, String address, UUID uid) {
         this.id = id;
         this.eventId = eventId;
         this.description = description;
@@ -57,11 +58,11 @@ public class Specific {
         this.ticketCount = ticketCount;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

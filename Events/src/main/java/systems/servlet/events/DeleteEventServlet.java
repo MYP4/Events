@@ -33,18 +33,16 @@ public class DeleteEventServlet extends HttpServlet {
         new EventModelToEventMapper());
 
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher(JspHelper.get("events/deleteEvent")).forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            Event event = parseJsonToEvent(request.getReader());
-            eventService.create(event);
+            eventService.delete(UUID.fromString(request.getParameter("uid")));
             response.setStatus(HttpServletResponse.SC_CREATED);
+            response.sendRedirect(request.getContextPath() + "/events");
         } catch (DBException e) {
             logger.error(e.getMessage());
         }

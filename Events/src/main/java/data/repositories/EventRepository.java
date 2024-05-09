@@ -15,8 +15,8 @@ public class EventRepository implements Repository<UUID, Event> {
     private static final Logger logger = Logger.getLogger(EventRepository.class);
 
     public static final String CREATE_SQL = """
-            INSERT INTO events(id, name, description, admin_id, uid) 
-            VALUES (?,?,?,?,?);
+            INSERT INTO events(name, description, admin_id, uid) 
+            VALUES (?,?,?,?);
             """;
 
     public static final String FIND_ALL_SQL = """

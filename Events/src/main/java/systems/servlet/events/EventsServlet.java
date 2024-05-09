@@ -36,10 +36,9 @@ public class EventsServlet extends HttpServlet {
         new EventModelToEventMapper());
 
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            List<EventModel> events = userService.getAll();
+            List<EventModel> events = eventService.getAll();
             request.setAttribute("events", events);
             request.getRequestDispatcher(JspHelper.get("events/events")).forward(request, response);
         } catch (DBException e) {
@@ -48,38 +47,22 @@ public class EventsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            Event event = parseJsonToEvent(request.getReader());
-            userService.create(event);
+            EventModel event = parseJsonToEventModel(request);
+            eventService.create(event);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (DBException e) {
             logger.error(e.getMessage());
         }
     }
 
-    @Override
-    protected void doPut(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
-        try {
-            Event event = parseJsonToEvent(request.getReader());
-            userService.update(event);
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
-    }
+    private EventModel parseJsonToEventModel(HttpServletRequest request) {
+        String name = request.getParameter("name");
+        String description = request.getParameter("description");
+        UUID adminId = UUID.fromString(request.getParameter("admin_id"));
+        UUID uid = UUID.fromString(request.getParameter("uid"));
 
-    @Override
-    protected void doDelete(HttpServletRequest request,
-                            HttpServletResponse response) throws ServletException, IOException {
-        try {
-            UUID id = UUID.fromString(request.getParameter("id"));
-            userService.delete(id);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
+        return new EventModel(name, description, adminId, uid);
     }
 }

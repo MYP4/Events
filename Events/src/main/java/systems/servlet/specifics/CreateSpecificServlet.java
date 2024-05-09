@@ -19,6 +19,7 @@ import services.SpecificService;
 import util.JspHelper;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,23 +34,28 @@ public class CreateSpecificServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            List<SpecificModel> specifics = specificService.getAll();
-            request.setAttribute("specifics", specifics);
-            request.getRequestDispatcher(JspHelper.get("specifics")).forward(request, response);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
+        request.getRequestDispatcher(JspHelper.get("specifics/createSpecific")).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            Specific specific = parseJsonToSpecific(request.getReader());
+            SpecificModel specific = parseJsonToSpecificModel(request);
             specificService.create(specific);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (DBException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private SpecificModel parseJsonToSpecificModel(HttpServletRequest request) {
+        UUID eventId = UUID.fromString(request.getParameter("event_id"));
+        String description = request.getParameter("description");
+        int ticketCount = Integer.parseInt(request.getParameter("ticket_count"));
+        BigDecimal price = new BigDecimal(request.getParameter("price"));
+        String address = request.getParameter("address");
+        UUID uid = UUID.fromString(request.getParameter("uid"));
+
+        return new SpecificModel(eventId, description, ticketCount, price, address, uid);
     }
 }

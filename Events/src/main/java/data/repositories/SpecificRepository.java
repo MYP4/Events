@@ -1,6 +1,8 @@
 package data.repositories;
 
 import data.entity.Specific;
+
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,7 @@ public class SpecificRepository {
             preparedStatement.setObject(1, specific.getEventId());
             preparedStatement.setString(2, specific.getDescription());
             preparedStatement.setInt(3, specific.getTicketCount());
-            preparedStatement.setFloat(4, specific.getPrice());
+            preparedStatement.setObject(4, specific.getPrice());
             preparedStatement.setString(5, specific.getAddress());
             preparedStatement.setObject(6, specific.getUid());
             preparedStatement.executeUpdate();
@@ -102,7 +104,7 @@ public class SpecificRepository {
             preparedStatement.setObject(1, specific.getEventId());
             preparedStatement.setString(2, specific.getDescription());
             preparedStatement.setInt(3, specific.getTicketCount());
-            preparedStatement.setFloat(4, specific.getPrice());
+            preparedStatement.setObject(4, specific.getPrice());
             preparedStatement.setString(5, specific.getAddress());
             preparedStatement.setObject(6, specific.getUid());
             preparedStatement.executeUpdate();
@@ -130,7 +132,7 @@ public class SpecificRepository {
         specific.setEventId((UUID) resultSet.getObject("event_id"));
         specific.setDescription(resultSet.getString("description"));
         specific.setTicketCount(resultSet.getInt("ticket_count"));
-        specific.setPrice(resultSet.getFloat("price"));
+        specific.setPrice((BigDecimal)resultSet.getObject("price"));
         specific.setAddress(resultSet.getString("address"));
         specific.setUid(resultSet.getObject("uid", UUID.class));
         return specific;

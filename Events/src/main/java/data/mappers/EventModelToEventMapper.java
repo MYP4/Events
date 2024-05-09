@@ -10,12 +10,11 @@ public class EventModelToEventMapper implements Mapper<EventModel, Event> {
         if (eventModel == null) {
             return null;
         }
-
         Event event = new Event();
         event.setName(eventModel.getName());
         event.setDescription(eventModel.getDescription());
-        event.setAdminId(eventModel.getAdminId());
         event.setUid(eventModel.getUid());
+        event.setAdminId(eventModel.getAdminId());
 
         return event;
     }

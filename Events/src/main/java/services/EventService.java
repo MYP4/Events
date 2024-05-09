@@ -58,7 +58,10 @@ public class EventService {
                 throw new DBException("Failed to create event: user not exists");
             }
             Event event = eventModelToEventMapper.map(eventModel);
-            return eventToEventModelMapper.map(eventRepository.create(event));
+            event.setUid(UUID.randomUUID());
+            event = eventRepository.create(event);
+            EventModel model = eventToEventModelMapper.map(event);
+            return model;
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw new DBException("Failed to create event: " + e.getMessage());
@@ -67,7 +70,8 @@ public class EventService {
 
     public void update(EventModel eventModel) throws DBException{
         try {
-            eventRepository.update(eventModelToEventMapper.map(eventModel));
+            Event event = eventModelToEventMapper.map(eventModel);
+            eventRepository.update(event);
         } catch (DBException e) {
             logger.error(e.getMessage());
             throw new DBException(e.getMessage());

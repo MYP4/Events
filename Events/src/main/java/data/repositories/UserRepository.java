@@ -26,7 +26,7 @@ public class UserRepository implements Repository<UUID, User> {
     public static final String FIND_BY_ID_SQL = """
             SELECT id, first_name, second_name, role, account_number, balance, login, password, uid
             FROM users
-            WHERE id = ?;
+            WHERE uid = ?;
             """;
 
     public static final String FIND_BY_EMAIL_AND_PASSWORD_SQL = """
@@ -87,7 +87,7 @@ public class UserRepository implements Repository<UUID, User> {
     public User getById(UUID id) throws DBException {
         User user = null;
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setObject(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {

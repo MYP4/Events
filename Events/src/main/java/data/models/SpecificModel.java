@@ -1,19 +1,20 @@
 package data.models;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class SpecificModel {
     private UUID eventId;
     private String description;
     private int ticketCount;
-    private float price;
+    private BigDecimal price;
     private String address;
     private UUID uid;
 
     public SpecificModel() {
     }
 
-    public SpecificModel(UUID eventId, String description, int ticketCount, float price, String address, UUID uid) {
+    public SpecificModel(UUID eventId, String description, int ticketCount, BigDecimal price, String address, UUID uid) {
         this.eventId = eventId;
         this.description = description;
         this.ticketCount = ticketCount;
@@ -46,11 +47,11 @@ public class SpecificModel {
         this.ticketCount = ticketCount;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

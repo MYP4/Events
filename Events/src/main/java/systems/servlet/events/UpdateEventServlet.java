@@ -33,20 +33,28 @@ public class UpdateEventServlet extends HttpServlet {
         new EventModelToEventMapper());
 
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher(JspHelper.get("events/updateEvent")).forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            Event event = parseJsonToEvent(request.getReader());
-            eventService.create(event);
+            EventModel event = parseJsonToEventModel(request);
+            eventService.update(event);
             response.setStatus(HttpServletResponse.SC_CREATED);
+            response.sendRedirect(request.getContextPath() + "/events");
         } catch (DBException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private EventModel parseJsonToEventModel(HttpServletRequest request) {
+        String name = request.getParameter("name");
+        String description = request.getParameter("description");
+        UUID admin =UUID.fromString(request.getParameter("adminId"));
+        UUID uid = UUID.fromString(request.getParameter("uid"));
+
+        return new EventModel(name, description, admin, uid);
     }
 }

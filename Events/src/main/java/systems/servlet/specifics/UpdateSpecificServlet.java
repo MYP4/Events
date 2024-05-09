@@ -19,6 +19,7 @@ import services.SpecificService;
 import util.JspHelper;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,19 +34,13 @@ public class UpdateSpecificServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            List<SpecificModel> specifics = specificService.getAll();
-            request.setAttribute("specifics", specifics);
-            request.getRequestDispatcher(JspHelper.get("specifics")).forward(request, response);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
+        request.getRequestDispatcher(JspHelper.get("specifics/updateSpecific")).forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            Specific specific = parseJsonToSpecific(request.getReader());
+            SpecificModel specific = parseJsonToSpecificModel(request);
             specificService.create(specific);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (DBException e) {
@@ -53,25 +48,14 @@ public class UpdateSpecificServlet extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            Specific specific = parseJsonToSpecific(request.getReader());
-            specificService.update(specific);
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
-    }
+    private SpecificModel parseJsonToSpecificModel(HttpServletRequest request) {
+        UUID eventId = UUID.fromString(request.getParameter("event_id"));
+        String description = request.getParameter("description");
+        int ticketCount = Integer.parseInt(request.getParameter("ticket_count"));
+        BigDecimal price = new BigDecimal(request.getParameter("price"));
+        String address = request.getParameter("address");
+        UUID uid = UUID.fromString(request.getParameter("uid"));
 
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            UUID id = UUID.fromString(request.getParameter("id"));
-            specificService.delete(id);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
+        return new SpecificModel(eventId, description, ticketCount, price, address, uid);
     }
 }

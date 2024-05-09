@@ -58,6 +58,7 @@ public class SpecificService {
                 throw new DBException("Failed to create specific: event not exists");
             }
             Specific specific = specificModelToSpecificMapper.map(specificModel);
+            specific.setUid(UUID.randomUUID());
             return  specificToSpecificModelMapper.map(specificRepository.create(specific));
 
         } catch (Exception e) {

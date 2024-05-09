@@ -32,6 +32,7 @@ public class CreateTicketServlet extends HttpServlet {
         new UserRepository(),
         new TicketModelToTicketMapper(),
         new TicketToTicketModelMapper());
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
@@ -46,7 +47,7 @@ public class CreateTicketServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            Ticket ticket = parseJsonToTicket(request.getReader());
+            TicketModel ticket = parseJsonToTicketModel(request);
             ticketService.create(ticket);
             response.setStatus(HttpServletResponse.SC_CREATED);
         } catch (DBException e) {
@@ -54,25 +55,12 @@ public class CreateTicketServlet extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            Ticket ticket = parseJsonToTicket(request.getReader());
-            ticketService.update(ticket);
-            response.setStatus(HttpServletResponse.SC_OK);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
-    }
+    private TicketModel parseJsonToTicketModel(HttpServletRequest request) {
+        UUID userId = UUID.fromString(request.getParameter("user_id"));
+        UUID specificId = UUID.fromString(request.getParameter("user_id"));
+        int status = Integer.parseInt(request.getParameter("status"));
+        UUID uid = UUID.fromString(request.getParameter("user_id"));
 
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            UUID id = UUID.fromString(request.getParameter("id"));
-            ticketService.delete(id);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
+        return new TicketModel(userId, specificId, status, uid);
     }
 }
