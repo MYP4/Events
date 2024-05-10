@@ -14,7 +14,7 @@ public class User {
     private String password;
     private UUID uid;
 
-    public User(Long id, String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String login, UUID uid) {
+    public User(Long id, String firstName, String secondName, UserRole role, String accountNumber, BigDecimal balance, String login, String password, UUID uid) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
@@ -22,6 +22,7 @@ public class User {
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.login = login;
+        this.password = password;
         this.uid = uid;
     }
 

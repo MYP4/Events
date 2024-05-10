@@ -9,7 +9,7 @@ public class Event {
     private UUID adminId;
     private UUID uid;
 
-    public Event(long id, String name, String description, UUID adminId, UUID uid) {
+    public Event(Long id, String name, String description, UUID adminId, UUID uid) {
         this.id = id;
         this.name = name;
         this.description = description;
