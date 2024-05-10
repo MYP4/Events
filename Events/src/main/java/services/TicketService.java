@@ -67,7 +67,22 @@ public class TicketService {
                 logger.error("Failed to create ticket: specific not exists");
                 throw new DBException("Failed to create ticket: specific not exists");
             }
+            List<Ticket> ticketList = ticketRepository.getSpecificAll(specific.getUid());
+            if (ticketList.size() >= specific.getTicketCount()) {
+                logger.info("Tickets are out");
+                throw new DBException("Tickets are out");
+            }
+            if (user.getBalance().compareTo(specific.getPrice()) == -1) {
+                logger.info("Top up your balance");
+                throw new DBException("Top up your balance");
+            }
+
+            user.setBalance(user.getBalance().subtract(specific.getPrice()));
+            userRepository.updateBalance(user);
+
             Ticket ticket = ticketModelToTicketMapper.map(ticketModel);
+            ticket.setStatus(1);
+            ticket.setUid(UUID.randomUUID());
             return ticketToTicketModelMapper.map(ticketRepository.create(ticket));
         } catch (Exception e) {
             logger.error(e.getMessage());

@@ -1,16 +1,15 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Игорь
-  Date: 09.05.2024
-  Time: 14:06
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Ticket Form</title>
 </head>
 <body>
-
+<h2>Ticket Form</h2>
+<form action="${pageContext.request.contextPath}/create-ticket" method="post">
+    <label for="specificId">Specific Id:</label><br>
+    <input type="text" id="specificId" name="specificId" required><br>
+    <label for="userId">User Id:</label><br>
+    <input type="text" id="userId" name="userId" required><br>
+    <input type="submit" value="Create">
+</form>
 </body>
 </html>

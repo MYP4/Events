@@ -70,7 +70,7 @@ public class SpecificRepository {
     }
     public Specific getById(UUID id) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setObject(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {

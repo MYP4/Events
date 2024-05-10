@@ -29,7 +29,7 @@ import util.JspHelper;
 
 @WebServlet("/users")
 public class UsersServlet extends HttpServlet {
-    private static final org.apache.log4j.Logger logger = Logger.getLogger(UsersServlet.class);
+    private static final Logger logger = Logger.getLogger(UsersServlet.class);
     private final UserService userService = new UserService(
         new UserRepository(),
         new UserToUserModelMapper(),

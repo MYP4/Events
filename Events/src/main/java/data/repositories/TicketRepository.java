@@ -23,6 +23,12 @@ public class TicketRepository {
             FROM tickets
             """;
 
+    public static final String FIND_SPECIFIC_SQL = """
+            SELECT id, user_id, specific_id, status, uid
+            FROM tickets
+            WHERE specific_id = ?
+            """;
+
     public static final String FIND_BY_ID_SQL = """
             SELECT id, user_id, specific_id, status, uid
             FROM tickets
@@ -44,7 +50,7 @@ public class TicketRepository {
 
     public Ticket create(Ticket ticket) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(CREATE_SQL)) {
             preparedStatement.setObject(1, ticket.getUserId());
             preparedStatement.setObject(2, ticket.getSpecificId());
             preparedStatement.setInt(3, ticket.getStatus());
@@ -64,7 +70,7 @@ public class TicketRepository {
 
     public Ticket getById(UUID id) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             preparedStatement.setObject(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -79,7 +85,23 @@ public class TicketRepository {
 
     public List<Ticket> getAll() throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Ticket> result = new ArrayList<>();
+            while (resultSet.next()) {
+                result.add(buildTicketEntity(resultSet));
+            }
+            return result;
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Ticket> getSpecificAll(UUID uid) throws DBException {
+        try (Connection connection = ConnectionManager.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_SPECIFIC_SQL)) {
+            preparedStatement.setObject(1, uid);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Ticket> result = new ArrayList<>();
             while (resultSet.next()) {
@@ -94,7 +116,7 @@ public class TicketRepository {
 
     public void update(Ticket ticket) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
             preparedStatement.setObject(1, ticket.getUserId());
             preparedStatement.setObject(2, ticket.getSpecificId());
             preparedStatement.setInt(3, ticket.getStatus());
@@ -108,7 +130,7 @@ public class TicketRepository {
 
     public boolean delete(UUID id) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(DELETE_SQL)) {
             preparedStatement.setObject(1, id);
             int executeUpdate = preparedStatement.executeUpdate();
             return executeUpdate > 0;

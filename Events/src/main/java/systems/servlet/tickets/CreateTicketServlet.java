@@ -3,6 +3,7 @@ package systems.servlet.tickets;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import data.entity.Ticket;
+import data.exceptions.CreationException;
 import data.exceptions.DBException;
 import data.mappers.TicketModelToTicketMapper;
 import data.mappers.TicketToTicketModelMapper;
@@ -35,13 +36,7 @@ public class CreateTicketServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            List<TicketModel> tickets = ticketService.getAll();
-            request.setAttribute("tickets", tickets);
-            request.getRequestDispatcher(JspHelper.get("tickets/createTicket")).forward(request, response);
-        } catch (DBException e) {
-            logger.error(e.getMessage());
-        }
+        request.getRequestDispatcher(JspHelper.get("tickets/createTicket")).forward(request, response);
     }
 
     @Override
@@ -50,17 +45,17 @@ public class CreateTicketServlet extends HttpServlet {
             TicketModel ticket = parseJsonToTicketModel(request);
             ticketService.create(ticket);
             response.setStatus(HttpServletResponse.SC_CREATED);
+            response.sendRedirect(request.getContextPath() + "/tickets");
         } catch (DBException e) {
             logger.error(e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/tickets");
         }
     }
 
     private TicketModel parseJsonToTicketModel(HttpServletRequest request) {
-        UUID userId = UUID.fromString(request.getParameter("user_id"));
-        UUID specificId = UUID.fromString(request.getParameter("user_id"));
-        int status = Integer.parseInt(request.getParameter("status"));
-        UUID uid = UUID.fromString(request.getParameter("user_id"));
+        UUID userId = UUID.fromString(request.getParameter("userId"));
+        UUID specificId = UUID.fromString(request.getParameter("specificId"));
 
-        return new TicketModel(userId, specificId, status, uid);
+        return new TicketModel(userId, specificId, 0, null);
     }
 }

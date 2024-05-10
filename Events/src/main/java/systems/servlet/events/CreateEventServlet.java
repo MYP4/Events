@@ -46,6 +46,7 @@ public class CreateEventServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/events");
         } catch (DBException e) {
             logger.error(e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/events");
         }
     }
 

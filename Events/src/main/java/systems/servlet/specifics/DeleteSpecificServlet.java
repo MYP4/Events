@@ -45,6 +45,7 @@ public class DeleteSpecificServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/specifics");
         } catch (DBException e) {
             logger.error(e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/specifics");
         }
     }
 

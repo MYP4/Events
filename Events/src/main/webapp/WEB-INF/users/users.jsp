@@ -35,6 +35,17 @@
     </tr>
 </table>
 
+<c:if test="${sessionScope.user.role == 'ADMINISTRATOR'}">
+    <table>
+        <tr>
+            <th>
+                <form action="${pageContext.request.contextPath}/update-user" method="get">
+                    <button type="submit">Update Role</button>
+                </form>
+            </th></tr>
+    </table>
+</c:if>
+
 <table>
     <tr>
         <th>FirstName</th>

@@ -43,13 +43,13 @@ public class UserRepository implements Repository<UUID, User> {
 
     public static  final String UPDATE_SQL = """
             UPDATE users 
-            SET first_name = ?, 
-                second_name = ?, 
-                role = ?, 
-                account_number = ?, 
-                balance = ?, 
-                login = ?,
-                password = ?,
+            SET role = ? 
+            WHERE uid = ?;
+            """;
+
+    public static  final String UPDATE_BALANCE_SQL = """
+            UPDATE users 
+            SET balance = ? 
             WHERE uid = ?;
             """;
 
@@ -103,7 +103,7 @@ public class UserRepository implements Repository<UUID, User> {
     public User getByLogin(String login) throws DBException {
         User user = null;
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_LOGIN_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_BY_LOGIN_SQL)) {
             preparedStatement.setObject(1, login);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -153,13 +153,20 @@ public class UserRepository implements Repository<UUID, User> {
     public void update(User user) throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_SQL)) {
-            preparedStatement.setString(1, user.getFirstName());
-            preparedStatement.setString(2, user.getSecondName());
-            preparedStatement.setObject(3, user.getRole());
-            preparedStatement.setString(4, user.getAccountNumber());
-            preparedStatement.setBigDecimal(5, user.getBalance());
-            preparedStatement.setString(6, user.getLogin());
-            preparedStatement.setObject(7, user.getId());
+            preparedStatement.setObject(1, String.valueOf(user.getRole()));
+            preparedStatement.setObject(2, user.getUid());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
+            throw new DBException(e.getMessage());
+        }
+    }
+
+    public void updateBalance(User user) throws DBException {
+        try (Connection connection = ConnectionManager.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BALANCE_SQL)) {
+            preparedStatement.setObject(1, user.getBalance());
+            preparedStatement.setObject(2, user.getUid());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             logger.error(e.getMessage());
