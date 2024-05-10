@@ -1,5 +1,6 @@
 package data.entity;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Ticket {
@@ -58,5 +59,18 @@ public class Ticket {
 
     public void setUid(UUID uid) {
         this.uid = uid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ticket ticket = (Ticket) o;
+        return status == ticket.status && Objects.equals(userId, ticket.userId) && Objects.equals(specificId, ticket.specificId) && Objects.equals(uid, ticket.uid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, specificId, status, uid);
     }
 }

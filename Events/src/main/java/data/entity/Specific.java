@@ -2,6 +2,7 @@ package data.entity;
 
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Specific {
@@ -78,5 +79,18 @@ public class Specific {
 
     public void setUid(UUID uid) {
         this.uid = uid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Specific specific = (Specific) o;
+        return ticketCount == specific.ticketCount && Objects.equals(eventId, specific.eventId) && Objects.equals(description, specific.description) && Objects.equals(price, specific.price) && Objects.equals(address, specific.address) && Objects.equals(uid, specific.uid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventId, description, ticketCount, price, address, uid);
     }
 }

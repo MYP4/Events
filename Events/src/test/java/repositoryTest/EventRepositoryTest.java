@@ -33,23 +33,27 @@ public class EventRepositoryTest {
         eventRepository.create(event2);
         List<Event> result = eventRepository.getAll();
 
-        events.get(0).setId(result.get(result.size() - 2).getId());
-        events.get(1).setId(result.get(result.size() - 1).getId());
-        assertTrue(events.get(0).equals(result.get(0)) &&
-                events.get(1).equals(result.get(1)));
         for (Event event : events) {
             eventRepository.delete(event.getUid());
         }
         userRepository.delete(user.getUid());
+
+        events.get(0).setId(result.get(result.size() - 2).getId());
+        events.get(1).setId(result.get(result.size() - 1).getId());
+
+        assertTrue(events.get(0).equals(result.get(result.size() - 2)) &&
+                events.get(1).equals(result.get(result.size() - 1)));
     }
     @Test
     void getByIdTest() throws DBException{
         var user = userRepository.create(new User(null, "test", "test", UserRole.ADMINISTRATOR, "TEST", new BigDecimal(0), "test", "test", UUID.randomUUID()));
         var event = eventRepository.create(new Event(null, "A", "A", user.getUid(), UUID.randomUUID()));
         var result = eventRepository.getById(event.getUid());
-        assertEquals(event, result);
+
         eventRepository.delete(event.getUid());
         userRepository.delete(user.getUid());
+
+        assertEquals(event, result);
     }
     @Test
     void createTest() throws DBException {
@@ -61,10 +65,11 @@ public class EventRepositoryTest {
         }
         var event1 = events.get(events.size() - 1);
         event.setId(event1.getId());
-        assertEquals(event, event1);
 
         eventRepository.delete(event.getUid());
         userRepository.delete(user.getUid());
+
+        assertEquals(event, event1);
     }
     @Test
     void updateTest() throws DBException {
@@ -77,10 +82,11 @@ public class EventRepositoryTest {
         eventRepository.update(eventToUpdate);
 
         var result = eventRepository.getById(event.getUid());
-        assertEquals(result, eventToUpdate);
 
         eventRepository.delete(event.getUid());
         userRepository.delete(user.getUid());
+
+        assertEquals(result, eventToUpdate);
     }
     @Test
     void deleteTest() throws DBException {
@@ -88,8 +94,8 @@ public class EventRepositoryTest {
         var event = eventRepository.create(new Event(null, "A", "A", user.getUid(), UUID.randomUUID()));
 
         eventRepository.delete(event.getUid());
+        userRepository.delete(user.getUid());
 
         assertNull(eventRepository.getById(event.getUid()));
-        userRepository.delete(user.getUid());
     }
 }

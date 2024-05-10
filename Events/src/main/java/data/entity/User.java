@@ -1,6 +1,7 @@
 package data.entity;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.UUID;
 
 public class User {
@@ -99,6 +100,19 @@ public class User {
 
     public void setUid(UUID uid) {
         this.uid = uid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(firstName, user.firstName) && Objects.equals(secondName, user.secondName) && role == user.role && Objects.equals(accountNumber, user.accountNumber) && Objects.equals(balance, user.balance) && Objects.equals(login, user.login) && Objects.equals(password, user.password) && Objects.equals(uid, user.uid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, secondName, role, accountNumber, balance, login, password, uid);
     }
 }
 
