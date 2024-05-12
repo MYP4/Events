@@ -85,7 +85,7 @@ public class SpecificRepository {
 
     public List<Specific> getAll() throws DBException {
         try (Connection connection = ConnectionManager.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
+            PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Specific> result = new ArrayList<>();
             while (resultSet.next()) {
@@ -132,7 +132,7 @@ public class SpecificRepository {
         specific.setEventId((UUID) resultSet.getObject("event_id"));
         specific.setDescription(resultSet.getString("description"));
         specific.setTicketCount(resultSet.getInt("ticket_count"));
-        specific.setPrice((BigDecimal)resultSet.getObject("price"));
+        specific.setPrice(new BigDecimal(resultSet.getDouble("price")));
         specific.setAddress(resultSet.getString("address"));
         specific.setUid(resultSet.getObject("uid", UUID.class));
         return specific;

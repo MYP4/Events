@@ -39,7 +39,7 @@ public class TicketRepository {
             UPDATE tickets 
             SET user_id = ?, 
                 specific_id = ?, 
-                status = ?, 
+                status = ? 
             WHERE uid = ?;
             """;
 

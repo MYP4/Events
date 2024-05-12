@@ -14,7 +14,7 @@ public class Specific {
     private String address;
     private UUID uid;
 
-    public Specific(long id, UUID eventId, String description, int ticketCount, BigDecimal price, String address, UUID uid) {
+    public Specific(Long id, UUID eventId, String description, int ticketCount, BigDecimal price, String address, UUID uid) {
         this.id = id;
         this.eventId = eventId;
         this.description = description;

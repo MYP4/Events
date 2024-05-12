@@ -33,13 +33,7 @@ public class EventRepositoryTest {
         eventRepository.create(event2);
         List<Event> result = eventRepository.getAll();
 
-        for (Event event : events) {
-            eventRepository.delete(event.getUid());
-        }
         userRepository.delete(user.getUid());
-
-        events.get(0).setId(result.get(result.size() - 2).getId());
-        events.get(1).setId(result.get(result.size() - 1).getId());
 
         assertTrue(events.get(0).equals(result.get(result.size() - 2)) &&
                 events.get(1).equals(result.get(result.size() - 1)));
@@ -64,7 +58,6 @@ public class EventRepositoryTest {
             fail();
         }
         var event1 = events.get(events.size() - 1);
-        event.setId(event1.getId());
 
         eventRepository.delete(event.getUid());
         userRepository.delete(user.getUid());
@@ -77,7 +70,6 @@ public class EventRepositoryTest {
         var eventToUpdate = new Event(null, "A", "A", user.getUid(), UUID.randomUUID());
         var event = eventRepository.create(eventToUpdate);
 
-        eventToUpdate.setId(event.getId());
         eventToUpdate.setName("BBB");
         eventRepository.update(eventToUpdate);
 
