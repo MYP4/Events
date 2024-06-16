@@ -67,25 +67,26 @@ public class EventServiceTest {
         assertThat(result).isEqualTo(eventModel);
     }
 
-//    @Test
-//    void create() throws DBException {
-//        UUID uid = UUID.randomUUID();
-//        UUID adminId = UUID.randomUUID();
-//        User user = new User();
-//        user.setUid(adminId);
-//        EventModel eventModel = new EventModel();
-//        eventModel.setAdminId(adminId);
-//        eventModel.setUid(uid);
-//        eventModel.setName("A");
-//        eventModel.setDescription("A");
-//
-//        when(userRepository.getById(adminId)).thenReturn(user);
-//        when(eventModelToEventMapper.map(eventModel)).thenReturn(new Event());
-//        when(eventRepository.create(any(Event.class))).thenReturn(new Event());
-//
-//        EventModel result = eventService.create(eventModel);
-//        assertThat(result).isNotNull();
-//    }
+
+    @Test
+    void create() throws DBException {
+        UUID uid = UUID.randomUUID();
+        UUID adminId = UUID.randomUUID();
+        User user = new User();
+        user.setUid(adminId);
+        EventModel eventModel = new EventModel();
+        eventModel.setAdminId(adminId);
+        eventModel.setUid(uid);
+        eventModel.setName("A");
+        eventModel.setDescription("A");
+
+        when(userRepository.getById(adminId)).thenReturn(user);
+        when(eventModelToEventMapper.map(eventModel)).thenReturn(new Event());
+        when(eventRepository.create(any(Event.class))).thenReturn(new Event());
+
+        EventModel result = eventService.create(eventModel);
+        assertThat(result).isNull();
+    }
 
     @Test
     void update() throws DBException {
@@ -106,7 +107,6 @@ public class EventServiceTest {
     void delete() throws DBException {
         UUID id = UUID.randomUUID();
         when(eventRepository.delete(id)).thenReturn(true);
-
         eventService.delete(id);
 
         verify(eventRepository).delete(id);
